@@ -1,0 +1,153 @@
+-- Discounts:
+GET /api/v1/discounts
+GET /api/v1/discounts/:id
+POST /api/v1/discounts
+PATCH /api/v1/discounts/:id
+DELETE /api/v1/discounts/:id
+DELETE /api/v1/discounts
+
+-- Bookings:
+GET /api/v1/bookings
+
+-- Properties:
+GET /api/v1/properties
+GET /api/v1/properties/:id
+POST /api/v1/properties
+PUT /api/v1/properties/:id
+DELETE /api/v1/properties/:id
+GET /api/v1/properties/:propertyId/bookings
+GET /api/v1/properties/owner/:userId
+GET /api/v1/properties/category/:category
+
+-- Users:
+POST /api/v1/users
+GET /api/v1/users
+GET /api/v1/users/:id
+PATCH /api/v1/users/:id
+DELETE /api/v1/users/:id
+GET /api/v1/users/@me/profile
+PUT /api/v1/users/@me/profile
+POST /api/v1/users/password/change
+POST /api/v1/users/password/forgot
+POST /api/v1/users/password/reset
+POST /api/v1/users/@me/avatar
+POST /api/v1/users/@me/thumbnail
+GET /api/v1/users/@me/booking
+
+-- Favorites:
+GET /api/v1/users/:userId/favorites
+GET /api/v1/users/:userId/favorites/:propertyId
+POST /api/v1/users/:userId/favorites
+DELETE /api/v1/users/:userId/favorites/:propertyId
+
+-- Auth:
+POST /api/v1/auth/signin
+POST /api/v1/auth/signup
+POST /api/v1/auth/token/refresh
+GET /api/v1/auth/users/:id
+GET /api/v1/auth/pagination
+GET /api/v1/auth/search
+GET /api/v1/auth/search/user
+GET /api/v1/auth/search/global
+DELETE /api/v1/auth
+POST /api/v1/auth/logout
+PUT /api/v1/auth/:userId/roles
+POST /api/v1/auth/:userId/block
+POST /api/v1/auth/:userId/unblock
+POST /api/v1/auth/confirm-email
+POST /api/v1/auth/resend-confirmation-link
+GET /api/v1/auth/signin/google
+GET /api/v1/auth/signin/google/callback
+GET /api/v1/auth/signin/facebook
+GET /api/v1/auth/signin/facebook/callback
+
+-- Zalopay:
+GET /api/v1/zalopay
+
+-- Callback:
+POST /api/v1/callback
+
+-- Province:
+
+POST /api/v1/province
+GET /api/v1/province
+GET /api/v1/province/:id
+PATCH /api/v1/province/:id
+DELETE /api/v1/province/:id
+DELETE /api/v1/province
+
+-- District:
+POST /api/v1/district
+GET /api/v1/district
+PATCH /api/v1/district/:wardId
+DELETE /api/v1/district/:id
+DELETE /api/v1/district
+GET /api/v1/district/:id/wards
+
+-- Wards:
+POST /api/v1/wards
+GET /api/v1/wards
+GET /api/v1/wards/pagination
+GET /api/v1/wards/:id
+PATCH /api/v1/wards/:id
+DELETE /api/v1/wards/:id
+DELETE /api/v1/wards
+
+-- Status:
+POST /api/v1/status
+GET /api/v1/status
+PATCH /api/v1/status/:id
+DELETE /api/v1/status/:id
+DELETE /api/v1/status
+GET /api/v1/status/:id
+
+-- PlaceType:
+POST /api/v1/place-type
+GET /api/v1/place-type
+GET /api/v1/place-type/pagination
+GET /api/v1/place-type/search
+GET /api/v1/place-type/:id
+GET /api/v1/place-type/:id/properties
+PATCH /api/v1/place-type/:id
+DELETE /api/v1/place-type/:id
+DELETE /api/v1/place-type
+
+-- Experiences:
+POST /api/v1/experiences
+GET /api/v1/experiences
+GET /api/v1/experiences/pagination
+GET /api/v1/experiences/:id
+GET /api/v1/experiences/bookings/:id
+GET /api/v1/experiences/search
+POST /api/v1/experiences/:experienceId/bookings
+PATCH /api/v1/experiences/:id
+PATCH /api/v1/experiences/:experienceId/bookings/:id
+DELETE /api/v1/experiences/:id
+DELETE /api/v1/experiences
+DELETE /api/v1/experiences/:experienceId/bookings/:id
+POST /api/v1/experiences/:experienceId/rating
+GET /api/v1/experiences/:experienceId/reviews
+GET /api/v1/experiences/:experienceId/bookings/:bookingId
+POST /api/v1/experiences/:experienceId/guests
+DELETE /api/v1/experiences/:experienceId/guests/:guestId
+GET /api/v1/experiences/:experienceId/guests
+GET /api/v1/experiences/:experienceId/availability
+
+-- Upload:
+POST /api/v1/experiences/:experienceId/images
+DELETE /api/v1/experiences/:experienceId/images
+
+-- Category:
+POST /api/v1/categories
+POST /api/v1/categories/:id/properties
+GET /api/v1/categories
+GET /api/v1/categories/pagination
+GET /api/v1/categories/search
+GET /api/v1/categories/:id
+PATCH /api/v1/categories/:id
+DELETE /api/v1/categories/:id
+DELETE /api/v1/categories/:id/properties/:property_id
+DELETE /api/v1/categories/:id/properties
+
+-- Logger:
+GET /api/v1/logger

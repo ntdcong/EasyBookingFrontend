@@ -1,0 +1,162 @@
+/* Footer.css */
+.footer {
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    padding: 32px 0 16px;
+    margin-top: 32px;
+  }
+  
+  .footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 80px; /* Thêm padding để không sát lề quá */
+  }
+  
+  /* Điều chỉnh grid để chia 3 cột đều nhau */
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px; /* Tăng khoảng cách giữa các cột */
+    margin-bottom: 32px;
+  }
+  
+  /* Đảm bảo mỗi section có width như nhau và căn trái */
+  .footer-section {
+    width: 100%;
+    text-align: left;
+  }
+  
+  /* Căn lề trái cho h3 */
+  .footer-section h3 {
+    font-weight: 600;
+    font-size: 14px;
+    margin: 0 0 16px 0;
+    padding: 0;
+    text-align: left;
+  }
+  
+  /* Căn lề trái cho ul */
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+  }
+  
+  /* Căn lề trái cho li */
+  .footer-section li {
+    margin-bottom: 12px;
+    padding: 0;
+    text-align: left;
+  }
+  
+  /* Căn lề trái cho links */
+  .footer-section a {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+    display: block; /* Thay đổi thành block để căn trái tốt hơn */
+    text-align: left;
+  }
+  
+  .footer-section a:hover {
+    color: #000;
+    text-decoration: underline;
+  }
+  
+  .footer-bottom {
+    border-top: 1px solid #ddd;
+    padding-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .footer-legal {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .footer-legal a {
+    color: #666;
+    text-decoration: none;
+  }
+  
+  .footer-legal a:hover {
+    text-decoration: underline;
+  }
+  
+  .dot {
+    margin: 0 8px;
+  }
+  
+  .footer-settings {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .language-currency {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .btn-setting {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+  }
+  
+  .btn-setting:hover {
+    background-color: #f7f7f7;
+    border-radius: 4px;
+  }
+  
+  .social-links {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .social-links a {
+    color: #666;
+    text-decoration: none;
+  }
+  
+  .social-links a:hover {
+    color: #000;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .footer-container {
+      padding: 0 20px; /* Giảm padding ở mobile */
+    }
+    
+    .footer-nav {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  
+    .footer-bottom {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .footer-settings {
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    .language-currency {
+      width: 100%;
+      justify-content: center;
+    }
+  }

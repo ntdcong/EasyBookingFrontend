@@ -1,0 +1,77 @@
+.hover-dropdown:hover .dropdown-menu {
+    display: block;
+  }
+  
+  .dropdown-menu {
+    display: none; /* Ẩn dropdown mặc định */
+  }
+  
+  /* Layout.css */
+
+.category-filter-container {
+  background-color: #f8f9fa; /* Màu nền sáng */
+  padding: 10px 15px; /* Padding nhẹ nhàng */
+  border-radius: 20px; /* Bo tròn các góc của khung */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ nhẹ */
+  width: 100%;
+  max-width: 1400px; /* Giới hạn chiều rộng */
+  margin: 20px auto; /* Căn giữa khung */
+}
+
+.category-filter {
+  display: flex;
+  justify-content: space-evenly; /* Các mục có khoảng cách đều nhau */
+  align-items: center;
+  flex-wrap: nowrap; /* Không cho các mục xuống dòng */
+  gap: 10px; /* Khoảng cách đều giữa các mục */
+}
+
+.category-item {
+  height: 70px;
+  width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 12px; /* Bo tròn icon box */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng cho các mục */
+  transition: all 0.3s ease; /* Thêm hiệu ứng chuyển động */
+  text-align: center;
+  overflow: hidden; /* Đảm bảo phần thừa bị ẩn */
+  cursor: pointer;
+}
+
+.category-item:hover {
+  transform: translateY(-15px); /* Di chuyển lên khi hover */
+  box-shadow: 0 5px 15px rgba(248, 116, 127, 2.2); /* Tăng độ bóng khi hover */
+  height: 110px;
+  width: 110px;
+  cursor: pointer;
+}
+
+.category-icon {
+  font-size: 20px; /* Kích thước icon nhỏ hơn */
+  margin-bottom: 5px;
+  transition: transform 0.3s ease; /* Thêm hiệu ứng cho icon */
+}
+
+.category-item:hover .category-icon {
+  transform: scale(1.6) rotate(360deg); /* Hiệu ứng gương */
+  cursor: pointer;
+}
+
+.category-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap; /* Không cho tên category xuống dòng */
+  overflow: hidden; /* Ẩn phần thừa */
+  max-width: 100%; /* Đảm bảo tên không vượt quá giới hạn của khung */
+}
+
+.category-item:active {
+  transform: scale(0.98); /* Hiệu ứng nén khi nhấn */
+}

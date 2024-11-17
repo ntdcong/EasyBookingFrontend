@@ -1,0 +1,22 @@
+/* Custom header color */
+.custom-header {
+  background-color: #ff5a5f;  /* Set header background color */
+}
+
+.navbar-custom {
+  background-color: #ff5a5f;  /* Set navbar background color */
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-nav .nav-link {
+  color: white;  /* White text for navbar items */
+  transition: all 0.3s ease;  /* Smooth transition for scaling and color changes */
+}
+
+/* Hover effect for navbar items */
+.navbar-custom .navbar-nav .nav-link:hover {
+  color: #fff;  /* White color on hover */
+  transform: scale(1.1);  /* Enlarge the item on hover */
+  border-radius: 8px;  /* Change the border radius to make it more rounded */
+  background-color: rgba(255, 255, 255, 0.2);  /* Optional: add background on hover */
+}

@@ -1,0 +1,70 @@
+/* src/components/CategoryList.css */
+
+.category-list {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .category-list-title {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .styled-table thead tr {
+    background-color: #FF385C;
+    color: #ffffff;
+    text-align: left;
+  }
+  
+  .styled-table th, .styled-table td {
+    padding: 15px 20px;
+  }
+  
+  .styled-table th {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  
+  .styled-table tbody tr {
+    border-bottom: 1px solid #e9e9e9;
+    transition: background-color 0.2s ease;
+  }
+  
+  .styled-table tbody tr:nth-of-type(even) {
+    background-color: #f1f4ff;
+  }
+  
+  .styled-table tbody tr:hover {
+    background-color: #e0e5ff;
+  }
+  
+  .styled-table tbody tr:last-of-type {
+    border-bottom: none;
+  }
+  
+  .icon-img {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .styled-table td, .styled-table th {
+    border: none; /* Loại bỏ đường viền giữa các ô */
+  }
+  
