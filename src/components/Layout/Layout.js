@@ -4,6 +4,7 @@ import axios from 'axios';
 import './Layout.css'; 
 import './Navbar.css'; 
 import './Footer.css';
+import SearchBar from './SearchBar';
 import LoginModal from '../Modal/LoginModal';  
 
 const Layout = ({ children }) => {
@@ -71,8 +72,11 @@ const Layout = ({ children }) => {
             </div>
           </div>
         </nav>
+
       </header>
 
+    {/* Add SearchBar here */}
+    <SearchBar />
       {/* Thanh lọc danh mục */}
       <div className="category-filter-container">
         <div className="category-filter">
@@ -89,8 +93,10 @@ const Layout = ({ children }) => {
         {children}
       </main>
 
+      {/* Footer */}
       <footer className="footer">
         <div className="footer-container">
+          {/* Hỗ trợ Section */}
           <div className="footer-nav">
             <div className="footer-section">
               <h3>Hỗ trợ</h3>
@@ -102,7 +108,7 @@ const Layout = ({ children }) => {
                 <li><a href="#">Báo cáo lo ngại của bạn</a></li>
               </ul>
             </div>
-
+            {/* Đón tiếp khách Section */}
             <div className="footer-section">
               <h3>Đón tiếp khách</h3>
               <ul>
@@ -115,7 +121,7 @@ const Layout = ({ children }) => {
                 <li><a href="#">Tìm đồng chủ nhà</a></li>
               </ul>
             </div>
-
+            {/* Airbnb Section */}
             <div className="footer-section">
               <h3>EasyBooking</h3>
               <ul>
@@ -128,6 +134,7 @@ const Layout = ({ children }) => {
             </div>
           </div>
 
+          {/* Bottom Bar */}
           <div className="footer-bottom">
             <div className="footer-legal">
               <span>&copy; 2024 EasyBooking, Inc.</span>
@@ -150,7 +157,6 @@ const Layout = ({ children }) => {
                   <span>VND</span>
                 </button>
               </div>
-
               <div className="social-links">
                 <a href="#" aria-label="Facebook">
                   <i className="fab fa-facebook-f"></i>
@@ -167,6 +173,7 @@ const Layout = ({ children }) => {
         </div>
       </footer>
 
+      {/* Add modal at the end of layout */}
       <LoginModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );

@@ -66,71 +66,81 @@ const CategoryForm = () => {
 
   return (
     <div className="container mt-4">
-      <h2 className="text-center">Danh Sách Danh Mục</h2>
+      <h2 className="text-center mb-4">Danh Sách Danh Mục</h2>
       {/* Hiển thị danh sách danh mục dưới dạng bảng */}
-      <table className="table table-bordered mt-3">
-        <thead>
-          <tr>
-            <th>Tên Danh Mục</th>
-            <th>Mô Tả</th>
-            <th>Slug</th>
-            <th>Biểu Tượng</th>
-          </tr>
-        </thead>
-        <tbody>
-          {categories.map((category) => (
-            <tr key={category.id}>
-              <td>{category.category_name}</td>
-              <td>{category.description}</td>
-              <td>{category.slug}</td>
-              <td>{category.icon}</td>
+      <div className="table-responsive">
+        <table className="table table-striped table-bordered">
+          <thead className="thead-light">
+            <tr>
+              <th>Tên Danh Mục</th>
+              <th>Mô Tả</th>
+              <th>Slug</th>
+              <th>Biểu Tượng</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {categories.map((category) => (
+              <tr key={category.id}>
+                <td>{category.category_name}</td>
+                <td>{category.description}</td>
+                <td>{category.slug}</td>
+                <td>{category.icon}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      <h1 className="text-center mt-4">Thêm Danh Mục Mới</h1>
-      <form onSubmit={handleSubmit} className="mt-4">
-        <div className="form-group">
-          <label>Tên Danh Mục:</label>
-          <input
-            type="text"
-            className="form-control"
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-            required
-          />
+      <h1 className="text-center mt-5 mb-4">Thêm Danh Mục Mới</h1>
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="categoryName">Tên Danh Mục:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="categoryName"
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="description">Mô Tả:</label>
+              <textarea
+                className="form-control"
+                id="description"
+                rows="3"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></textarea>
+            </div>
+            <div className="form-group">
+              <label htmlFor="slug">Slug:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="slug"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="icon">Biểu Tượng:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="icon"
+                value={icon}
+                onChange={(e) => setIcon(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary btn-block">Thêm Danh Mục</button>
+          </form>
         </div>
-        <div className="form-group">
-          <label>Mô Tả:</label>
-          <input
-            type="text"
-            className="form-control"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label>Slug:</label>
-          <input
-            type="text"
-            className="form-control"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Biểu Tượng:</label>
-          <input
-            type="text"
-            className="form-control"
-            value={icon}
-            onChange={(e) => setIcon(e.target.value)}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">Thêm Danh Mục</button>
-      </form>
+      </div>
       {message && <div className="alert alert-success mt-3">{message}</div>}
       {error && <div className="alert alert-danger mt-3">{error}</div>}
     </div>
