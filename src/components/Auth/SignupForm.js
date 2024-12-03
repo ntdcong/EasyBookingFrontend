@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 
-const SignupForm = () => {
+const SignupForm = ({ initialData }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    email: '',
+    email: initialData?.email || '',
+    phoneNumber: initialData?.phoneNumber || '',
     password: '',
     confirmPassword: '',
-    phoneNumber: ''
   });
 
   const [errors, setErrors] = useState({});

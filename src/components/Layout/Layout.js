@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import './Layout.css'; 
-import './Navbar.css'; 
+import './Layout.css';
+import './Navbar.css';
 import './Footer.css';
 import SearchBar from './SearchBar';
-import LoginModal from '../Modal/LoginModal';  
+import LoginModal from '../Modal/LoginModal';
 
 const Layout = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State để mở/đóng Modal
   const [categories, setCategories] = useState([]); // State chứa danh mục
-
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    window.location.href = "/login";
+  };
   // Mở modal
   const openModal = () => setIsModalOpen(true);
   // Đóng modal
@@ -71,12 +75,24 @@ const Layout = ({ children }) => {
               </ul>
             </div>
           </div>
+          <button
+            onClick={logout}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "#dc3545",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Đăng xuất
+          </button>
         </nav>
 
       </header>
 
-    {/* Add SearchBar here */}
-    <SearchBar />
+      {/* Add SearchBar here */}
+      <SearchBar />
       {/* Thanh lọc danh mục */}
       <div className="category-filter-container">
         <div className="category-filter">
@@ -145,7 +161,7 @@ const Layout = ({ children }) => {
               <span className="dot">·</span>
               <a href="#">Sơ đồ trang web</a>
             </div>
-            
+
             <div className="footer-settings">
               <div className="language-currency">
                 <button className="btn-setting">
