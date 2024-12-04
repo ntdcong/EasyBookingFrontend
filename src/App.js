@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 import CategoryForm from './components/Category/CategoryForm'; 
 import CategoryList from './components/Category/CategoryList'; 
 import ProvinceList from './components/Location/ListProvince';
@@ -12,6 +13,7 @@ import WardList from './components/Location/WardList';
 import AddProvince from './components/Location/AddProvince';
 import AddDistrict from './components/Location/AddDistrict';
 import AddWard from './components/Location/AddWard';
+import AddProperty from './components/Property/AddProperty';
 import PropertyList from './components/Property/PropertyList';
 import PropertyDetail from './components/Property/PropertyDetail';
 import SignupForm from './components/Auth/SignupForm';
@@ -21,7 +23,6 @@ import ProfilePage from './components/Auth/ProfilePage';
 const App = () => {
   // Kiểm tra nếu có token trong localStorage (người dùng đã đăng nhập)
   const isAuthenticated = localStorage.getItem("accessToken");
-
   return (
     <Router>
       <Layout>
@@ -66,6 +67,10 @@ const App = () => {
           <Route 
             path="/my-profile" 
             element={isAuthenticated ? <ProfilePage /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/add-property" 
+            element={isAuthenticated ? <AddProperty /> : <Navigate to="/login" />} 
           />
           
           {/* Trang properties sẽ luôn có sẵn cho cả người dùng chưa đăng nhập */}

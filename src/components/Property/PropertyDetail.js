@@ -220,16 +220,16 @@ const PropertyDetail = () => {
 
                             <div className="d-flex justify-content-between mb-2">
                                 <span className="text-decoration-underline">
-                                    {property.price?.toLocaleString()} VND x 5 đêm
+                                    {property.price?.toLocaleString()} VND x 5 đêm:
                                 </span>
                                 <span>{(property.price * 5)?.toLocaleString()} VND</span>
                             </div>
                             <div className="d-flex justify-content-between mb-2">
-                                <span className="text-decoration-underline">Phí dọn dẹp</span>
+                                <span className="text-decoration-underline">Phí dọn dẹp:</span>
                                 <span>80,000 VND</span>
                             </div>
                             <div className="d-flex justify-content-between mb-3">
-                                <span className="text-decoration-underline">Phí dịch vụ Airbnb</span>
+                                <span className="text-decoration-underline">Phí dịch vụ EasyBooing:</span>
                                 <span>50,000 VND</span>
                             </div>
 

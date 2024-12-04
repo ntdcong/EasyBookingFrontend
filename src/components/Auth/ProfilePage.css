@@ -1,33 +1,57 @@
-.profile-container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    color: #333;
-  }
-  
-  .profile-header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .profile-avatar {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
+.profile-avatar {
+    width: 180px;
+    height: 180px;
     object-fit: cover;
-    margin-bottom: 10px;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
-  .profile-details {
-    background-color: #f7f7f7;
-    padding: 15px;
+  .btn-upload {
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .btn-edit {
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 24px;
+    background-color: #FF5A5F;
+    border-color: #FF5A5F;
   }
   
-  .profile-details p {
-    margin: 5px 0;
-    font-size: 16px;
+  .btn-edit:hover {
+    background-color: #FF4246;
+    border-color: #FF4246;
   }
   
+  .info-item {
+    padding: 8px 0;
+  }
+  
+  .info-value {
+    font-size: 1.1rem;
+    color: #222;
+    margin-top: 4px;
+  }
+  
+  .form-control:focus {
+    border-color: #FF5A5F;
+    box-shadow: 0 0 0 0.2rem rgba(255, 90, 95, 0.25);
+  }
+  
+  .modal-content {
+    border-radius: 12px;
+  }
+  
+  .modal-header {
+    border-bottom: 1px solid #eee;
+  }
+  
+  .modal-footer {
+    border-top: 1px solid #eee;
+  }
+  
+  .form-label {
+    font-weight: 500;
+    color: #484848;
+  }

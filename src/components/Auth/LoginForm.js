@@ -9,24 +9,23 @@ const LoginForm = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
       const response = await axios.post("http://localhost:8080/api/v1/auth/signin", {
         email,
         password,
       });
-
-      const { access_token, refresh_token } = response.data;
-      // Lưu token vào localStorage hoặc cookies
+      const { id, access_token, refresh_token } = response.data;
+      // Lưu token và id vào localStorage
       localStorage.setItem("accessToken", access_token);
       localStorage.setItem("refreshToken", refresh_token);
-
+      localStorage.setItem("userId", id); // Lưu id người dùng
       // Điều hướng đến trang chính (Home)
       window.location.href = "/home";
     } catch (error) {
       setErrorMessage("Email hoặc mật khẩu không đúng!");
     }
   };
+  
 
   return (
     <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
