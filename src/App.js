@@ -19,6 +19,9 @@ import PropertyDetail from './components/Property/PropertyDetail';
 import SignupForm from './components/Auth/SignupForm';
 import LoginForm from './components/Auth/LoginForm';
 import ProfilePage from './components/Auth/ProfilePage';
+import ExperiencesPage from './components/Experience/ExperiencesPage';
+import ExperiencesDetailPage from './components/Experience/ExperiencesDetailPage';
+
 
 const App = () => {
   // Kiểm tra nếu có token trong localStorage (người dùng đã đăng nhập)
@@ -76,6 +79,8 @@ const App = () => {
           {/* Trang properties sẽ luôn có sẵn cho cả người dùng chưa đăng nhập */}
           <Route path="/properties" element={<PropertyList />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
+          <Route path="/experience" element={<ExperiencesPage />} />
+          <Route path="/experience/:id" element={<ExperiencesDetailPage />} />
         </Routes>
       </Layout>
     </Router>
