@@ -26,16 +26,14 @@ const LoginModal = ({ isOpen, onClose }) => {
             <h4 className="fw-bold mb-4">Chào mừng bạn đến với EasyBooking</h4>
 
             <form>
-              <a href="/login">
-                <button className="btn btn-danger w-100 rounded-3 py-3 mb-3">
-                  Đăng Nhập
-                </button>
+              <a href="/login" className="btn btn-danger w-100 rounded-3 py-3 mb-3" role="button">
+                Đăng Nhập
               </a>
-              <a href="/register">
-                <button className="btn btn-danger w-100 rounded-3 py-3 mb-3">
-                  Đăng Ký
-                </button>
+
+              <a href="/sign-up" className="btn btn-danger w-100 rounded-3 py-3 mb-3" role="button">
+                Đăng Ký
               </a>
+
               <div className="position-relative my-4">
                 <hr />
                 <span className="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">

@@ -1,11 +1,13 @@
-// src/components/Auth/LoginForm.js
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Form, Button, Alert } from "react-bootstrap";
 
-const LoginForm = () => {
+const LoginForm = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -15,47 +17,61 @@ const LoginForm = () => {
         password,
       });
       const { id, access_token, refresh_token } = response.data;
+      
       // Lưu token và id vào localStorage
       localStorage.setItem("accessToken", access_token);
       localStorage.setItem("refreshToken", refresh_token);
-      localStorage.setItem("userId", id); // Lưu id người dùng
-      // Điều hướng đến trang chính (Home)
-      window.location.href = "/home";
+      localStorage.setItem("userId", id);
+      
+      // Gọi callback nếu được truyền (từ modal)
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      } else {
+        // Nếu không có callback (từ trang login riêng), điều hướng về trang chủ
+        navigate("/");
+      }
     } catch (error) {
       setErrorMessage("Email hoặc mật khẩu không đúng!");
     }
   };
-  
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
-      <h2>Đăng nhập</h2>
-      <form onSubmit={handleLogin}>
-        <div style={{ marginBottom: "10px" }}>
-          <input
+    <div className="container">
+      <Form onSubmit={handleLogin}>
+        <Form.Group className="mb-3">
+          <Form.Control
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ width: "100%", padding: "8px" }}
           />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <input
+        </Form.Group>
+        
+        <Form.Group className="mb-3">
+          <Form.Control
             type="password"
             placeholder="Mật khẩu"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ width: "100%", padding: "8px" }}
           />
-        </div>
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor: "#007BFF", color: "#fff", border: "none" }}>
+        </Form.Group>
+        
+        {errorMessage && (
+          <Alert variant="danger" className="mb-3">
+            {errorMessage}
+          </Alert>
+        )}
+        
+        <Button 
+          type="submit" 
+          variant="primary" 
+          className="w-100"
+        >
           Đăng nhập
-        </button>
-      </form>
+        </Button>
+      </Form>
     </div>
   );
 };

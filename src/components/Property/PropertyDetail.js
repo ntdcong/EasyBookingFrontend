@@ -3,12 +3,14 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Modal } from 'bootstrap';
 
 const PropertyDetail = () => {
     const { id } = useParams();
     const [property, setProperty] = useState(null);
     const [activeImage, setActiveImage] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
+    const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
 
     useEffect(() => {
         axios
@@ -21,6 +23,17 @@ const PropertyDetail = () => {
             });
     }, [id]);
 
+    const openPhotoModal = () => {
+        setIsPhotoModalOpen(true);
+    };
+
+    const closePhotoModal = () => {
+        setIsPhotoModalOpen(false);
+    };
+
+    const handleImageChange = (index) => {
+        setActiveImage(index);
+    };
     const handleLike = () => {
         setIsLiked(!isLiked);
     };
@@ -34,6 +47,13 @@ const PropertyDetail = () => {
             </div>
         );
     }
+
+    const images = property.images && property.images.length > 0 
+        ? property.images 
+        : Array(5).fill({ url: "https://via.placeholder.com/400x300" });
+    
+    // Limit to 5 images
+    const displayImages = images.slice(0, 5);
 
     return (
         <div className="container-fluid px-4 py-3" style={{ maxWidth: '1160px' }}>
@@ -66,32 +86,108 @@ const PropertyDetail = () => {
             </div>
 
             {/* Image Gallery */}
-            <div className="row g-2 mb-4">
-                <div className="col-12 col-md-6">
-                    <img
-                        src={property.mainImage || "https://via.placeholder.com/800x600?text=No+Image"}
-                        className="img-fluid w-100 h-100 rounded-start object-fit-cover"
-                        style={{ cursor: 'pointer' }}
-                        alt="Main"
-                    />
+            {/* Image Gallery */}
+            <div className="property-image-gallery position-relative mb-4" style={{ height: '500px' }}>
+                    {/* Main Large Image */}
+                    <div className="position-absolute top-0 start-0 w-50 h-100 pe-2 pb-2">
+                        <img 
+                            src={displayImages[0].url || "https://via.placeholder.com/800x600"} 
+                            alt="Main property image" 
+                            className="w-100 h-100 object-fit-cover rounded-3" 
+                            onError={(e) => e.target.src = "https://via.placeholder.com/800x600"}
+                        />
+                    </div>
+
+                    {/* Small Images Grid */}
+                    <div className="position-absolute top-0 end-0 w-50 h-100 ps-2">
+                        <div className="row g-2 h-100">
+                            {displayImages.slice(1).map((image, index) => (
+                                <div className="col-6" key={index}>
+                                    <img 
+                                        src={image.url || "https://via.placeholder.com/400x300"} 
+                                        alt={`Property view ${index + 2}`} 
+                                        className={`w-100 h-100 object-fit-cover rounded-3`}
+                                        onError={(e) => e.target.src = "https://via.placeholder.com/400x300"}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* View Photos Button */}
+                    <button 
+                        className="btn btn-outline-light border position-absolute bottom-0 end-0 m-3"
+                        style={{ zIndex: 10 }}
+                        onClick={openPhotoModal}
+                    >
+                        <i className="bi bi-images me-2"></i>
+                        Xem tất cả ảnh
+                    </button>
                 </div>
-                <div className="col-6 d-none d-md-block">
-                    <div className="row g-2 h-100">
-                        {[...Array(4)].map((_, index) => (
-                            <div className="col-6" key={index}>
-                                <img
-                                    src={`https://via.placeholder.com/400x300&text=Image${index + 2}`}
-                                    className={`img-fluid w-100 h-100 object-fit-cover ${index === 1 ? 'rounded-top-end' : ''} ${index === 3 ? 'rounded-bottom-end' : ''}`}
-                                    style={{ cursor: 'pointer' }}
-                                    alt={`Gallery ${index + 2}`}
-                                    onError={(e) => (e.target.src = "https://via.placeholder.com/400x300")}
-                                />
+
+                {/* Photo Modal */}
+                {isPhotoModalOpen && (
+                <div 
+                    className="modal show d-block" 
+                    tabIndex="-1" 
+                    style={{ 
+                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                        position: 'fixed', 
+                        top: 0, 
+                        left: 0, 
+                        width: '100%', 
+                        height: '100%', 
+                        zIndex: 1050 
+                    }}
+                >
+                    <div className="modal-dialog modal-fullscreen">
+                        <div className="modal-content bg-transparent">
+                            <div className="modal-header border-0">
+                                <button 
+                                    type="button" 
+                                    className="btn-close btn-close-white" 
+                                    onClick={closePhotoModal}
+                                ></button>
                             </div>
-                        ))}
+                            <div className="modal-body d-flex justify-content-center align-items-center">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-12 text-center mb-4">
+                                            <img 
+                                                src={images[activeImage].url || "https://via.placeholder.com/1200x800"} 
+                                                alt={`Property image ${activeImage + 1}`}
+                                                className="img-fluid max-vh-75"
+                                                style={{ maxHeight: '70vh' }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="row justify-content-center">
+                                        {images.map((image, index) => (
+                                            <div 
+                                                key={index} 
+                                                className="col-2 mb-3"
+                                                onClick={() => handleImageChange(index)}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <img 
+                                                    src={image.url || "https://via.placeholder.com/200x200"} 
+                                                    alt={`Thumbnail ${index + 1}`}
+                                                    className={`img-thumbnail ${index === activeImage ? 'border-primary' : ''}`}
+                                                    style={{ 
+                                                        height: '100px', 
+                                                        width: '100%', 
+                                                        objectFit: 'cover' 
+                                                    }}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
+            )}
 
             <div className="row gx-5">
                 {/* Main Content */}

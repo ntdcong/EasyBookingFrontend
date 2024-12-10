@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Carousel } from 'react-responsive-carousel'; // Thêm dòng này
 import axios from 'axios';
 import { Heart, MapPin, Users, Calendar, Star } from 'lucide-react';
 import './custom.css';
@@ -25,9 +26,9 @@ const placeholderImage = "https://via.placeholder.com/400x300?text=Trải+nghi�
 const ExperienceCard = ({ experience }) => {
   const [isLiked, setIsLiked] = useState(false);
   const navigate = useNavigate();
-  
-  const location = `${experience.ward.name}, ${experience.ward.district.name}, ${experience.ward.district.province.name}`;
 
+  const location = `${experience.ward.name}, ${experience.ward.district.name}, ${experience.ward.district.province.name}`;
+  
   const handleClick = () => {
     navigate(`/experience/${experience.id}`); // Navigate to the detail page
   };
@@ -35,16 +36,19 @@ const ExperienceCard = ({ experience }) => {
   return (
     <div className="card experience-card border-0 mb-4 position-relative" onClick={handleClick}>
       <div className="position-relative">
+        {/* Sử dụng Carousel cho phần ảnh */}
         <img 
-          src={experience.image || placeholderImage} 
+          src={experience.image && experience.image[0]?.url || placeholderImage} 
           alt={experience.name} 
           className="card-img-top rounded-3" 
-          style={{height: '250px', objectFit: 'cover'}} 
-          onError={(e) => e.target.src = placeholderImage} 
+          style={{height: '250px', objectFit: 'cover'}}
+          onError={(e) => e.target.src = placeholderImage}
         />
+
+        {/* Nút yêu thích */}
         <button
           className="btn btn-link position-absolute top-0 end-0 p-2"
-          onClick={(e) => {e.stopPropagation(); setIsLiked(!isLiked);}} // Prevent navigation when liking
+          onClick={(e) => { e.stopPropagation(); setIsLiked(!isLiked); }} // Ngăn chặn điều hướng khi click
         >
           <Heart
             fill={isLiked ? '#ff385c' : 'white'}
