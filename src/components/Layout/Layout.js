@@ -4,13 +4,17 @@ import axios from 'axios';
 import './Layout.css';
 import './Navbar.css';
 import './Footer.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import SearchBar from './SearchBar';
 import LoginModal from '../Modal/LoginModal';
+import ProfilePage from '../Auth/ProfilePage';
 
 const Layout = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [isScrolled, setIsScrolled] = useState(false);
+  const isAuthenticated = localStorage.getItem("accessToken");
 
   // Logout function
   const logout = () => {
@@ -57,13 +61,13 @@ const Layout = ({ children }) => {
           {/* Center Search Bar - Only on larger screens */}
           <div className="d-none d-md-block flex-grow-1 mx-4">
             <div className="input-group rounded-pill shadow-sm">
-              <input 
-                type="text" 
-                className="form-control rounded-start-pill border-0 ps-4" 
-                placeholder="Start your search" 
+              <input
+                type="text"
+                className="form-control rounded-start-pill border-0 ps-4"
+                placeholder="Start your search"
               />
-              <button 
-                className="btn btn-danger rounded-end-pill px-3" 
+              <button
+                className="btn btn-danger rounded-end-pill px-3"
                 type="button"
               >
                 <i className="fas fa-search"></i>
@@ -106,8 +110,8 @@ const Layout = ({ children }) => {
             </div>
 
             {/* Become a Host */}
-            <Link 
-              to="/become-host" 
+            <Link
+              to="/become-host"
               className="text-dark text-decoration-none me-3 fw-semibold d-none d-md-block"
             >
               Become a Host
@@ -122,21 +126,41 @@ const Layout = ({ children }) => {
 
             {/* User Profile Dropdown */}
             <div className="dropdown">
-              <button 
-                className="btn btn-light rounded-pill px-2 py-1 d-flex align-items-center" 
-                type="button" 
-                data-bs-toggle="dropdown" 
+              <button
+                className="btn btn-light rounded-pill px-2 py-1 d-flex align-items-center"
+                type="button"
+                data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
                 <i className="fas fa-bars me-2"></i>
-                <div className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" 
-                     style={{width: '30px', height: '30px'}}>
+                <div
+                  className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+                  style={{ width: '30px', height: '30px' }}
+                >
                   <i className="fas fa-user"></i>
                 </div>
               </button>
               <ul className="dropdown-menu dropdown-menu-end shadow">
-                <li><button className="dropdown-item" onClick={openModal}>Tài Khoản</button></li>
-                <li><button className="dropdown-item" onClick={logout}>Đăng xuất</button></li>
+                {!isAuthenticated && (
+                  <li>
+                    <button className="dropdown-item" onClick={openModal}>Tài Khoản</button>
+                  </li>
+                )}
+                {isAuthenticated && (
+                  <>
+                    <li>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => window.location.href = "/my-profile"}
+                      >
+                        Cá Nhân
+                      </button>
+                    </li>
+                    <li>
+                      <button className="dropdown-item" onClick={logout}>Đăng xuất</button>
+                    </li>
+                  </>
+                )}
                 <li><hr className="dropdown-divider" /></li>
                 <li><Link to="/become-host" className="dropdown-item">Trở thành Chủ nhà</Link></li>
                 <li><Link to="/help" className="dropdown-item">Trợ giúp</Link></li>
@@ -163,7 +187,7 @@ const Layout = ({ children }) => {
       </div>
 
       {/* Main Content - Add top padding to prevent content being hidden behind fixed navbar */}
-      <main className="flex-grow-1" style={{paddingTop: '100px'}}>
+      <main className="flex-grow-1" style={{ paddingTop: '20px' }}>
         {children}
       </main>
 

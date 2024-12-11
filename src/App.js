@@ -9,6 +9,7 @@ import CategoryList from './components/Category/CategoryList';
 import ProvinceList from './components/Location/ListProvince';
 import DistrictList from './components/Location/DistrictList'; 
 import Layout from './components/Layout/Layout'; 
+import HelpPage from './components/Layout/Help'; 
 import HomePage from './components/Layout/HomePage'; 
 import WardList from './components/Location/WardList';
 import AddProvince from './components/Location/AddProvince';
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/sign-up" element={<SignupForm />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/help" element={<HelpPage />} />
 
           {/* Các route yêu cầu đăng nhập sẽ bị ẩn nếu người dùng chưa đăng nhập */}
           <Route 

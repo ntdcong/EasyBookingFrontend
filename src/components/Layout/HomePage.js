@@ -52,22 +52,30 @@ const HomePage = () => {
         { title: 'Khách sạn & Resort', description: 'Những địa điểm sang trọng để nghỉ dưỡng', icon: 'building' }
     ];
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const videoRef = React.useRef(null);
 
     const handleVideoClick = () => {
-        setIsModalOpen(true);
+        if (videoRef.current) {
+            if (videoRef.current.requestFullscreen) {
+                videoRef.current.requestFullscreen();
+            } else if (videoRef.current.mozRequestFullScreen) { // Firefox
+                videoRef.current.mozRequestFullScreen();
+            } else if (videoRef.current.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                videoRef.current.webkitRequestFullscreen();
+            } else if (videoRef.current.msRequestFullscreen) { // IE/Edge
+                videoRef.current.msRequestFullscreen();
+            }
+        }
     };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-    };
 
     return (
         <div className="container-fluid px-0">
-            
+
             {/* Video Intro */}
             <div className="position-relative overflow-hidden" style={{ height: '95vh', maxHeight: '900px' }}>
                 <video
+                    ref={videoRef}
                     autoPlay
                     loop
                     muted
@@ -76,16 +84,17 @@ const HomePage = () => {
                     style={{
                         objectFit: 'cover',
                         zIndex: -1,
-                        filter: 'brightness(0.6)' // Slightly darken the video for better text visibility
+                        filter: 'brightness(0.6)',
                     }}
                 >
                     <source src="/background.mp4" type="video/mp4" />
                     Trình duyệt của bạn không hỗ trợ video.
                 </video>
-                <div className="container h-100">
+
+                <div className="container h-100" style={{ cursor: 'pointer' }} onClick={handleVideoClick}>
                     <div className="row h-100 align-items-center justify-content-center">
                         <div className="col-12 text-center">
-                            <h1
+                        <h1
                                 className="display-3 fw-bold mb-4"
                                 style={{
                                     letterSpacing: '2px',
@@ -124,49 +133,9 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
-
-                {/* Modal hiển thị video */}
-                <div
-                    id="video-modal"
-                    className="d-none position-fixed top-0 start-0 w-100 h-100"
-                    style={{
-                        backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                        zIndex: 9999,
-                    }}
-                >
-                    <div className="d-flex align-items-center justify-content-center h-100">
-                        <video
-                            id="fullscreen-video"
-                            controls
-                            autoPlay
-                            className="w-100"
-                            style={{
-                                maxWidth: '90vw',
-                                maxHeight: '90vh',
-                            }}
-                        >
-                            <source src="/background.mp4" type="video/mp4" />
-                            Trình duyệt của bạn không hỗ trợ video.
-                        </video>
-                    </div>
-                    <button
-                        id="close-modal"
-                        className="position-absolute top-2 end-2 btn btn-light rounded-circle"
-                        style={{
-                            width: '50px',
-                            height: '50px',
-                            fontSize: '1.5rem',
-                            zIndex: 10000,
-                        }}
-                    >
-                        &times;
-                    </button>
-                </div>
             </div>
 
 
-
-            {/* Rest of the content remains the same as in the original component */}
             {/* Property Type Filters */}
             <div className="container px-4 py-5">
                 <div className="row mb-5">
