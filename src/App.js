@@ -5,7 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Import CSS của carousel
 import CategoryForm from './components/Category/CategoryForm'; 
-import CategoryList from './components/Category/CategoryList'; 
 import ProvinceList from './components/Location/ListProvince';
 import DistrictList from './components/Location/DistrictList'; 
 import Layout from './components/Layout/Layout'; 
@@ -17,6 +16,7 @@ import AddDistrict from './components/Location/AddDistrict';
 import AddWard from './components/Location/AddWard';
 import AddProperty from './components/Property/AddProperty';
 import PropertyList from './components/Property/PropertyList';
+import BookingHistory from './components/Property/BookingHistory';
 import PropertyDetail from './components/Property/PropertyDetail';
 import SignupForm from './components/Auth/SignupForm';
 import LoginForm from './components/Auth/LoginForm';
@@ -48,10 +48,6 @@ const App = () => {
             element={isAuthenticated ? <CategoryForm /> : <Navigate to="/login" />} 
           />
           <Route 
-            path="/categories" 
-            element={isAuthenticated ? <CategoryList /> : <Navigate to="/login" />} 
-          />
-          <Route 
             path="/provinces" 
             element={isAuthenticated ? <ProvinceList /> : <Navigate to="/login" />} 
           />
@@ -78,6 +74,10 @@ const App = () => {
           <Route 
             path="/my-profile" 
             element={isAuthenticated ? <ProfilePage /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/booking-history" 
+            element={isAuthenticated ? <BookingHistory /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/add-property" 

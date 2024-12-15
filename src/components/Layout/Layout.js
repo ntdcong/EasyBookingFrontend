@@ -103,9 +103,6 @@ const Layout = ({ children }) => {
                 <li className="nav-item me-2">
                   <Link className="nav-link" to="/add-categories">Thêm Danh Mục</Link>
                 </li>
-                <li className="nav-item me-2">
-                  <Link className="nav-link" to="/categories">Danh Sách Danh Mục</Link>
-                </li>
               </ul>
             </div>
 
@@ -159,6 +156,7 @@ const Layout = ({ children }) => {
                     <li>
                       <button className="dropdown-item" onClick={logout}>Đăng xuất</button>
                     </li>
+                    <li><Link to="/booking-history" className="dropdown-item">Chuyến đi của bạn</Link></li>
                   </>
                 )}
                 <li><hr className="dropdown-divider" /></li>

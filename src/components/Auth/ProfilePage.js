@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Card, Form, Button, Modal, Image } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Modal, Form, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
     const [profile, setProfile] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [avatarFile, setAvatarFile] = useState(null);
-    const [updatedProfile, setUpdatedProfile] = useState({
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        dateOfBirth: '',
-        address: '',
-        gender: '',
-        avatar: '',
-        bio: '',
-    });
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [updatedProfile, setUpdatedProfile] = useState({});
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -31,250 +21,237 @@ const ProfilePage = () => {
                 setProfile(response.data.data);
                 setUpdatedProfile(response.data.data);
             } catch (error) {
-                console.error('Error fetching profile:', error);
-                toast.error('Failed to load profile');
+                console.error('Lỗi khi tải thông tin hồ sơ:', error);
+                toast.error('Không thể tải thông tin hồ sơ');
             }
         };
 
         fetchProfile();
     }, []);
 
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN'); // Định dạng ngày theo Tiếng Việt
+    };
+
+    const handleProfileUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem('accessToken');
+            const response = await axios.put('http://localhost:8080/api/v1/users/@me/profile', updatedProfile, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            setProfile(response.data.data);
+            setShowEditModal(false);
+            toast.success('Cập nhật hồ sơ thành công');
+        } catch (error) {
+            console.error('Lỗi khi cập nhật hồ sơ:', error);
+            toast.error('Không thể cập nhật hồ sơ');
+        }
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUpdatedProfile(prev => ({
             ...prev,
-            [name]: value,
+            [name]: value
         }));
-    };
-
-    const handleAvatarChange = (e) => {
-        const file = e.target.files[0];
-        setAvatarFile(file);
-    };
-
-    const handleSubmit = async () => {
-        const token = localStorage.getItem('accessToken');
-        if (!token) {
-            toast.error('Please login again');
-            return;
-        }
-
-        try {
-            const profileData = {
-                ...updatedProfile,
-                avatar: updatedProfile.avatar || "",
-                bio: updatedProfile.bio || "",
-                thumbnail: updatedProfile.thumbnail || "",
-            };
-
-            await axios.put('http://localhost:8080/api/v1/users/@me/profile', profileData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (avatarFile) {
-                const formData = new FormData();
-                formData.append('image', avatarFile);
-                await axios.post('http://localhost:8080/api/v1/users/@me/avatar', formData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-            }
-
-            toast.success('Profile updated successfully');
-            setShowModal(false);
-        } catch (error) {
-            console.error('Error updating profile:', error);
-            toast.error('Failed to update profile');
-        }
     };
 
     if (!profile) {
         return (
-            <div className="text-center my-5">
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </div>
-            </div>
+            <Container className="d-flex justify-content-center align-items-center vh-100">
+                <Spinner animation="border" variant="primary" />
+            </Container>
         );
     }
 
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-GB'); // Format DD/MM/YYYY
-    };
-
     return (
-        <Container className="py-5">
-            <Card className="border-0 shadow-sm">
-                <Card.Body className="p-4">
-                    <Row>
-                        <Col md={4} className="text-center">
-                            <div className="avatar-container mb-4">
-                                <Image
-                                    src={profile.avatar || '/default-avatar.jpg'}
-                                    alt="Profile"
-                                    roundedCircle
-                                    className="profile-avatar mb-3"
-                                />
-                                <div className="mt-3">
-                                    <Button
-                                        variant="outline-primary"
-                                        size="sm"
-                                        onClick={() => document.getElementById('avatarInput').click()}
-                                        className="btn-upload"
-                                    >
-                                        Change Photo
-                                    </Button>
-                                    <input
-                                        id="avatarInput"
-                                        type="file"
-                                        hidden
-                                        onChange={handleAvatarChange}
-                                        accept="image/*"
+        <div className="profile-page bg-light py-5">
+            <Container>
+                <Card className="profile-card shadow-lg border-0 rounded-4 overflow-hidden">
+                    {/* Tiêu đề Hồ Sơ */}
+                    <div
+                        className="profile-header position-relative text-white p-6"
+                        style={{
+                            backgroundImage: `url(${profile.thumbnail || '/default-thumbnail.jpg'})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                        }}
+                    >
+                        <Row className="align-items-center">
+                            <Col md={3} className="text-center mb-3 mb-md-0">
+                                <div className="profile-avatar-container position-relative d-inline-block">
+                                    <img
+                                        src={profile.avatar || '/default-avatar.jpg'}
+                                        alt="Ảnh đại diện"
+                                        className="profile-avatar rounded-circle shadow-sm"
                                     />
+                                    <span className="avatar-status position-absolute bottom-0 end-0 bg-success rounded-circle"></span>
                                 </div>
-                            </div>
-                        </Col>
-
-                        <Col md={8}>
-                            <h2 className="mb-4">{profile.firstName} {profile.lastName}</h2>
-                            <Row className="mb-4">
-                                <Col sm={6}>
-                                    <div className="info-item">
-                                        <div className="text-muted small">Email</div>
-                                        <div className="info-value">{profile.email}</div>
-                                    </div>
-                                </Col>
-                                <Col sm={6}>
-                                    <div className="info-item">
-                                        <div className="text-muted small">Phone</div>
-                                        <div className="info-value">{profile.phoneNumber}</div>
-                                    </div>
-                                </Col>
-                                <Col sm={6}>
-                                    <div className="info-item mt-3">
-                                        <div className="text-muted small">Gender</div>
-                                        <div className="info-value">{profile.gender}</div>
-                                    </div>
-                                </Col>
-                                <Col sm={6}>
-                                    <div className="info-item mt-3">
-                                        <div className="text-muted small">Address</div>
-                                        <div className="info-value">{profile.address}</div>
-                                    </div>
-                                </Col>
-                                <Col sm={6}>
-                                    <div className="info-item mt-3">
-                                        <div className="text-muted small">Date of Birth</div>
-                                        <div className="info-value">{formatDate(profile.dateOfBirth)}</div>
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Button
-                                variant="primary"
-                                onClick={() => setShowModal(true)}
-                                className="btn-edit"
-                            >
-                                Edit Profile
-                            </Button>
-                        </Col>
-                    </Row>
-                </Card.Body>
-            </Card>
-
-            <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
-                <Modal.Header closeButton>
-                    <Modal.Title>Edit Profile</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Row>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>First Name</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="firstName"
-                                        value={updatedProfile.firstName}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter first name"
-                                    />
-                                </Form.Group>
                             </Col>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Last Name</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="lastName"
-                                        value={updatedProfile.lastName}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter last name"
-                                    />
-                                </Form.Group>
+                            <Col md={9}>
+                                <h1 className="profile-name display-6 mb-2 fw-bold">
+                                    {profile.firstName} {profile.lastName}
+                                </h1>
+                                <p className="profile-email lead mb-0 text-white-75">{profile.email}</p>
+                                {profile.bio && (
+                                    <p className="profile-bio mt-2 text-white-50 fst-italic">
+                                        "{profile.bio}"
+                                    </p>
+                                )}
                             </Col>
                         </Row>
+                    </div>
 
-                        <Form.Group className="mb-3">
-                            <Form.Label>Phone Number</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="phoneNumber"
-                                value={updatedProfile.phoneNumber}
-                                onChange={handleInputChange}
-                                placeholder="Enter phone number"
-                            />
-                        </Form.Group>
+                    {/* Nội dung Hồ Sơ */}
+                    <Card.Body className="p-4">
+                        <Row>
+                            <Col md={6}>
+                                <h5 className="section-title mb-4 text-primary">Thông Tin Cá Nhân</h5>
+                                <div className="profile-detail-row mb-3 d-flex justify-content-between">
+                                    <span className="text-muted">Họ Tên</span>
+                                    <span className="fw-semibold">{profile.firstName} {profile.lastName}</span>
+                                </div>
+                                <div className="profile-detail-row mb-3 d-flex justify-content-between">
+                                    <span className="text-muted">Email</span>
+                                    <span className="fw-semibold">{profile.email}</span>
+                                </div>
+                                <div className="profile-detail-row mb-3 d-flex justify-content-between">
+                                    <span className="text-muted">Số Điện Thoại</span>
+                                    <span className="fw-semibold">{profile.phoneNumber || 'Chưa cung cấp'}</span>
+                                </div>
+                            </Col>
+                            <Col md={6}>
+                                <h5 className="section-title mb-4 text-primary">Thông Tin Thêm</h5>
+                                <div className="profile-detail-row mb-3 d-flex justify-content-between">
+                                    <span className="text-muted">Giới Tính</span>
+                                    <span className="fw-semibold">{profile.gender === 'MALE' ? 'Nam' : 'Nữ'}</span>
+                                </div>
+                                <div className="profile-detail-row mb-3 d-flex justify-content-between">
+                                    <span className="text-muted">Ngày Sinh</span>
+                                    <span className="fw-semibold">{formatDate(profile.dateOfBirth)}</span>
+                                </div>
+                                <div className="profile-detail-row mb-3 d-flex justify-content-between">
+                                    <span className="text-muted">Địa Chỉ</span>
+                                    <span className="fw-semibold">{profile.address || 'Chưa cung cấp'}</span>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Card.Body>
 
-                        <Form.Group className="mb-3">
-                            <Form.Label>Date of Birth</Form.Label>
-                            <Form.Control
-                                type="date"
-                                name="dateOfBirth"
-                                value={updatedProfile.dateOfBirth || ''}
-                                onChange={handleInputChange}
-                            />
-                        </Form.Group>
+                    {/* Nút hành động */}
+                    <Card.Footer className="bg-light p-4 d-flex justify-content-end">
+                        <Button
+                            variant="outline-primary"
+                            className="px-4 rounded-pill"
+                            onClick={() => setShowEditModal(true)}
+                        >
+                            Chỉnh Sửa Hồ Sơ
+                        </Button>
+                    </Card.Footer>
 
-                        <Form.Group className="mb-3">
-                            <Form.Label>Address</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="address"
-                                value={updatedProfile.address || ''}
-                                onChange={handleInputChange}
-                                placeholder="Enter address"
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Gender</Form.Label>
-                            <Form.Select
-                                name="gender"
-                                value={updatedProfile.gender}
-                                onChange={handleInputChange}
-                            >
-                                <option value="MALE">Male</option>
-                                <option value="FEMALE">Female</option>
-                            </Form.Select>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Cancel
-                    </Button>
-                    <Button variant="primary" onClick={handleSubmit}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </Container>
+                    {/* Modal Chỉnh Sửa Hồ Sơ */}
+                    <Modal show={showEditModal} onHide={() => setShowEditModal(false)} size="lg" centered>
+                        <Modal.Header closeButton className="border-bottom-0 pb-0">
+                            <Modal.Title className="w-100 text-center">Chỉnh Sửa Hồ Sơ</Modal.Title>
+                        </Modal.Header>
+                        <Form onSubmit={handleProfileUpdate}>
+                            <Modal.Body className="p-4">
+                                <Row>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Họ</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="firstName"
+                                                value={updatedProfile.firstName || ''}
+                                                onChange={handleInputChange}
+                                                className="rounded-pill"
+                                                required
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Tên</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="lastName"
+                                                value={updatedProfile.lastName || ''}
+                                                onChange={handleInputChange}
+                                                className="rounded-pill"
+                                                required
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Email</Form.Label>
+                                            <Form.Control
+                                                type="email"
+                                                name="email"
+                                                value={updatedProfile.email || ''}
+                                                onChange={handleInputChange}
+                                                className="rounded-pill"
+                                                required
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Số Điện Thoại</Form.Label>
+                                            <Form.Control
+                                                type="tel"
+                                                name="phoneNumber"
+                                                value={updatedProfile.phoneNumber || ''}
+                                                onChange={handleInputChange}
+                                                className="rounded-pill"
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Tiểu Sử</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        name="bio"
+                                        value={updatedProfile.bio || ''}
+                                        onChange={handleInputChange}
+                                        rows={3}
+                                        className="rounded-3"
+                                    />
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer className="border-top-0 pt-0 justify-content-center">
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => setShowEditModal(false)}
+                                    className="px-4 rounded-pill me-2"
+                                >
+                                    Hủy
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    type="submit"
+                                    className="px-4 rounded-pill"
+                                >
+                                    Lưu Thay Đổi
+                                </Button>
+                            </Modal.Footer>
+                        </Form>
+                    </Modal>
+                </Card>
+            </Container>
+        </div>
     );
 };
 

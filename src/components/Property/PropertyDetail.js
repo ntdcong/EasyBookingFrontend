@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import BookingModal from './BookingModal';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -11,6 +12,16 @@ const PropertyDetail = () => {
     const [activeImage, setActiveImage] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
     const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
+    const openBookingModal = () => {
+        setIsBookingModalOpen(true);
+    };
+
+    const closeBookingModal = () => {
+        setIsBookingModalOpen(false);
+    };
+
 
     useEffect(() => {
         axios
@@ -48,10 +59,10 @@ const PropertyDetail = () => {
         );
     }
 
-    const images = property.images && property.images.length > 0 
-        ? property.images 
+    const images = property.images && property.images.length > 0
+        ? property.images
         : Array(5).fill({ url: "https://via.placeholder.com/400x300" });
-    
+
     // Limit to 5 images
     const displayImages = images.slice(0, 5);
 
@@ -86,66 +97,65 @@ const PropertyDetail = () => {
             </div>
 
             {/* Image Gallery */}
-            {/* Image Gallery */}
             <div className="property-image-gallery position-relative mb-4" style={{ height: '500px' }}>
-                    {/* Main Large Image */}
-                    <div className="position-absolute top-0 start-0 w-50 h-100 pe-2 pb-2">
-                        <img 
-                            src={displayImages[0].url || "https://via.placeholder.com/800x600"} 
-                            alt="Main property image" 
-                            className="w-100 h-100 object-fit-cover rounded-3" 
-                            onError={(e) => e.target.src = "https://via.placeholder.com/800x600"}
-                        />
-                    </div>
-
-                    {/* Small Images Grid */}
-                    <div className="position-absolute top-0 end-0 w-50 h-100 ps-2">
-                        <div className="row g-2 h-100">
-                            {displayImages.slice(1).map((image, index) => (
-                                <div className="col-6" key={index}>
-                                    <img 
-                                        src={image.url || "https://via.placeholder.com/400x300"} 
-                                        alt={`Property view ${index + 2}`} 
-                                        className={`w-100 h-100 object-fit-cover rounded-3`}
-                                        onError={(e) => e.target.src = "https://via.placeholder.com/400x300"}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* View Photos Button */}
-                    <button 
-                        className="btn btn-outline-light border position-absolute bottom-0 end-0 m-3"
-                        style={{ zIndex: 10 }}
-                        onClick={openPhotoModal}
-                    >
-                        <i className="bi bi-images me-2"></i>
-                        Xem tất cả ảnh
-                    </button>
+                {/* Main Large Image */}
+                <div className="position-absolute top-0 start-0 w-50 h-100 pe-2 pb-2">
+                    <img
+                        src={displayImages[0].url || "https://via.placeholder.com/800x600"}
+                        alt="Main property image"
+                        className="w-100 h-100 object-fit-cover rounded-3"
+                        onError={(e) => e.target.src = "https://via.placeholder.com/800x600"}
+                    />
                 </div>
 
-                {/* Photo Modal */}
-                {isPhotoModalOpen && (
-                <div 
-                    className="modal show d-block" 
-                    tabIndex="-1" 
-                    style={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
-                        position: 'fixed', 
-                        top: 0, 
-                        left: 0, 
-                        width: '100%', 
-                        height: '100%', 
-                        zIndex: 1050 
+                {/* Small Images Grid */}
+                <div className="position-absolute top-0 end-0 w-50 h-100 ps-2">
+                    <div className="row g-2 h-100">
+                        {displayImages.slice(1).map((image, index) => (
+                            <div className="col-6" key={index}>
+                                <img
+                                    src={image.url || "https://via.placeholder.com/400x300"}
+                                    alt={`Property view ${index + 2}`}
+                                    className={`w-100 h-100 object-fit-cover rounded-3`}
+                                    onError={(e) => e.target.src = "https://via.placeholder.com/400x300"}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* View Photos Button */}
+                <button
+                    className="btn btn-outline-light border position-absolute bottom-0 end-0 m-3"
+                    style={{ zIndex: 10 }}
+                    onClick={openPhotoModal}
+                >
+                    <i className="bi bi-images me-2"></i>
+                    Xem tất cả ảnh
+                </button>
+            </div>
+
+            {/* Photo Modal */}
+            {isPhotoModalOpen && (
+                <div
+                    className="modal show d-block"
+                    tabIndex="-1"
+                    style={{
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 1050
                     }}
                 >
                     <div className="modal-dialog modal-fullscreen">
                         <div className="modal-content bg-transparent">
                             <div className="modal-header border-0">
-                                <button 
-                                    type="button" 
-                                    className="btn-close btn-close-white" 
+                                <button
+                                    type="button"
+                                    className="btn-close btn-close-white"
                                     onClick={closePhotoModal}
                                 ></button>
                             </div>
@@ -153,8 +163,8 @@ const PropertyDetail = () => {
                                 <div className="container">
                                     <div className="row">
                                         <div className="col-12 text-center mb-4">
-                                            <img 
-                                                src={images[activeImage].url || "https://via.placeholder.com/1200x800"} 
+                                            <img
+                                                src={images[activeImage].url || "https://via.placeholder.com/1200x800"}
                                                 alt={`Property image ${activeImage + 1}`}
                                                 className="img-fluid max-vh-75"
                                                 style={{ maxHeight: '70vh' }}
@@ -163,20 +173,20 @@ const PropertyDetail = () => {
                                     </div>
                                     <div className="row justify-content-center">
                                         {images.map((image, index) => (
-                                            <div 
-                                                key={index} 
+                                            <div
+                                                key={index}
                                                 className="col-2 mb-3"
                                                 onClick={() => handleImageChange(index)}
                                                 style={{ cursor: 'pointer' }}
                                             >
-                                                <img 
-                                                    src={image.url || "https://via.placeholder.com/200x200"} 
+                                                <img
+                                                    src={image.url || "https://via.placeholder.com/200x200"}
                                                     alt={`Thumbnail ${index + 1}`}
                                                     className={`img-thumbnail ${index === activeImage ? 'border-primary' : ''}`}
-                                                    style={{ 
-                                                        height: '100px', 
-                                                        width: '100%', 
-                                                        objectFit: 'cover' 
+                                                    style={{
+                                                        height: '100px',
+                                                        width: '100%',
+                                                        objectFit: 'cover'
                                                     }}
                                                 />
                                             </div>
@@ -283,30 +293,20 @@ const PropertyDetail = () => {
                                 </h3>
                             </div>
 
-                            <div className="border rounded-3 mb-3">
-                                <div className="row g-0">
-                                    <div className="col-6 p-2 border-end border-bottom">
-                                        <small className="d-block fw-bold">NHẬN PHÒNG</small>
-                                        <input type="date" className="border-0 p-0 w-100" />
-                                    </div>
-                                    <div className="col-6 p-2 border-bottom">
-                                        <small className="d-block fw-bold">TRẢ PHÒNG</small>
-                                        <input type="date" className="border-0 p-0 w-100" />
-                                    </div>
-                                    <div className="col-12 p-2">
-                                        <small className="d-block fw-bold">KHÁCH</small>
-                                        <select className="border-0 p-0 w-100">
-                                            {[...Array(property.maxGuests)].map((_, i) => (
-                                                <option key={i + 1}>{i + 1} khách</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button className="btn btn-danger w-100 mb-3">
+                            <button
+                                className="btn btn-primary w-100"
+                                onClick={openBookingModal}
+                            >
                                 Đặt phòng
                             </button>
+
+                            {isBookingModalOpen && (
+                                <BookingModal
+                                    propertyId={id}
+                                    price={property.price}
+                                    onClose={closeBookingModal}
+                                />
+                            )}
 
                             <p className="text-center mb-0 text-secondary small">
                                 Bạn vẫn chưa bị trừ tiền
@@ -316,9 +316,9 @@ const PropertyDetail = () => {
 
                             <div className="d-flex justify-content-between mb-2">
                                 <span className="text-decoration-underline">
-                                    {property.price?.toLocaleString()} VND x 5 đêm:
+                                    Giá 1 đêm:
                                 </span>
-                                <span>{(property.price * 5)?.toLocaleString()} VND</span>
+                                <span>{(property.price)?.toLocaleString()} VND</span>
                             </div>
                             <div className="d-flex justify-content-between mb-2">
                                 <span className="text-decoration-underline">Phí dọn dẹp:</span>
@@ -330,8 +330,8 @@ const PropertyDetail = () => {
                             </div>
 
                             <div className="d-flex justify-content-between pt-3 border-top fw-bold">
-                                <span>Tổng trước thuế</span>
-                                <span>{(property.price * 5 + 130000)?.toLocaleString()} VND</span>
+                                <span>Tổng trước thuế:</span>
+                                <span>{(property.price + 130000)?.toLocaleString()} VND</span>
                             </div>
                         </div>
                     </div>

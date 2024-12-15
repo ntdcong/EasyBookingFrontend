@@ -1,57 +1,133 @@
+/* Custom Profile Page Styles */
+.profile-page {
+  background-color: #f7f7f7 !important;
+}
+
+.profile-card {
+  border-radius: 16px !important;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.profile-header {
+  position: relative;
+  color: #fff;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.profile-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Lớp mờ để dễ đọc chữ */
+  z-index: 1;
+}
+
+.profile-header > * {
+  position: relative;
+  z-index: 2;
+}
+
+
+.profile-avatar-container {
+  position: relative;
+  display: inline-block;
+}
+
 .profile-avatar {
-    width: 180px;
-    height: 180px;
-    object-fit: cover;
-    border: 3px solid #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.avatar-status {
+  width: 25px;
+  height: 25px;
+  border: 3px solid white;
+  bottom: 10px;
+  right: 10px;
+}
+
+.profile-name {
+  color: white;
+  font-weight: 700;
+}
+
+.profile-email {
+  opacity: 0.8;
+}
+
+.profile-bio {
+  max-width: 500px;
+  opacity: 0.7;
+}
+
+.section-title {
+  border-bottom: 2px solid #FF385C;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-detail-row {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.profile-detail-row:last-child {
+  border-bottom: none;
+}
+
+/* Form Customizations */
+.form-control {
+  border-radius: 25px;
+  border-color: #EBEBEB;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #FF385C;
+  box-shadow: 0 0 0 0.2rem rgba(255, 56, 92, 0.25);
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: #FF385C !important;
+  border-color: #FF385C !important;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #e63946 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-outline-primary {
+  color: #FF385C !important;
+  border-color: #FF385C !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #FF385C !important;
+  color: white !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .profile-avatar {
+      width: 100px;
+      height: 100px;
   }
-  
-  .btn-upload {
-    border-radius: 20px;
-    padding: 8px 20px;
-    font-size: 0.9rem;
+
+  .profile-name {
+      font-size: 1.5rem;
   }
-  
-  .btn-edit {
-    border-radius: 8px;
-    padding: 10px 24px;
-    background-color: #FF5A5F;
-    border-color: #FF5A5F;
-  }
-  
-  .btn-edit:hover {
-    background-color: #FF4246;
-    border-color: #FF4246;
-  }
-  
-  .info-item {
-    padding: 8px 0;
-  }
-  
-  .info-value {
-    font-size: 1.1rem;
-    color: #222;
-    margin-top: 4px;
-  }
-  
-  .form-control:focus {
-    border-color: #FF5A5F;
-    box-shadow: 0 0 0 0.2rem rgba(255, 90, 95, 0.25);
-  }
-  
-  .modal-content {
-    border-radius: 12px;
-  }
-  
-  .modal-header {
-    border-bottom: 1px solid #eee;
-  }
-  
-  .modal-footer {
-    border-top: 1px solid #eee;
-  }
-  
-  .form-label {
-    font-weight: 500;
-    color: #484848;
-  }
+}
