@@ -19,7 +19,8 @@ const Layout = ({ children }) => {
   // Logout function
   const logout = () => {
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userId"); // Nếu bạn có lưu thêm userId
     window.location.href = "/login";
   };
 
@@ -111,7 +112,7 @@ const Layout = ({ children }) => {
               to="/become-host"
               className="text-dark text-decoration-none me-3 fw-semibold d-none d-md-block"
             >
-              Become a Host
+              Trở thành Host
             </Link>
 
             {/* Language & Global Icon */}
@@ -160,7 +161,6 @@ const Layout = ({ children }) => {
                   </>
                 )}
                 <li><hr className="dropdown-divider" /></li>
-                <li><Link to="/become-host" className="dropdown-item">Trở thành Chủ nhà</Link></li>
                 <li><Link to="/help" className="dropdown-item">Trợ giúp</Link></li>
               </ul>
             </div>

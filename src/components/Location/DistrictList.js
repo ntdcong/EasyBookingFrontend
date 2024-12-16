@@ -20,42 +20,52 @@ const DistrictList = () => {
         setLoading(false);
       });
   }, []);
-  
-  
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        {error}
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h2>Danh sách Quận/Huyện</h2>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Tên</th>
-            <th>Province ID</th>
-            <th>Slug</th>
-            <th>Ngày Tạo</th>
-          </tr>
-        </thead>
-        <tbody>
-          {districts.map((district, index) => (
-            <tr key={district.id}>
-              <td>{index + 1}</td>
-              <td>{district.name}</td>
-              <td>{district.provinceId}</td>
-              <td>{district.slug}</td>
-              <td>{new Date(district.createdAt).toLocaleDateString()}</td>
+    <div className="container mt-4">
+      <h2 className="text-center mb-4">Danh sách Quận/Huyện</h2>
+      <div className="table-responsive">
+        <table className="table table-bordered table-hover">
+          <thead className="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Tên</th>
+              <th>Province ID</th>
+              <th>Slug</th>
+              <th>Ngày Tạo</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {districts.map((district, index) => (
+              <tr key={district.id}>
+                <td>{index + 1}</td>
+                <td>{district.name}</td>
+                <td>{district.provinceId}</td>
+                <td>{district.slug}</td>
+                <td>{new Date(district.createdAt).toLocaleDateString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
