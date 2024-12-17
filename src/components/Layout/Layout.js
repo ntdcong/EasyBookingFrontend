@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import './Layout.css';
 import './Navbar.css';
@@ -81,28 +81,11 @@ const Layout = ({ children }) => {
             {/* Original Navbar Links */}
             <div className="d-none d-md-block me-3">
               <ul className="navbar-nav flex-row">
-                <li className="nav-item dropdown hover-dropdown me-2">
-                  <Link className="nav-link" to="#" id="addressDropdown" role="button" aria-expanded="false">Địa Chỉ</Link>
-                  <ul className="dropdown-menu" aria-labelledby="addressDropdown">
-                    <li>
-                      <Link className="dropdown-item" to="/provinces">Danh Sách Tỉnh</Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/districts">Danh Sách Huyện</Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/wards">Danh Sách Đường</Link>
-                    </li>
-                  </ul>
-                </li>
                 <li className="nav-item me-2">
                   <Link className="nav-link" to="/properties">Danh Sách Địa Điểm</Link>
                 </li>
                 <li className="nav-item me-2">
                   <Link className="nav-link" to="/experience">Trải Nghiệm</Link>
-                </li>
-                <li className="nav-item me-2">
-                  <Link className="nav-link" to="/add-categories">Thêm Danh Mục</Link>
                 </li>
               </ul>
             </div>
@@ -185,9 +168,11 @@ const Layout = ({ children }) => {
       </div>
 
       {/* Main Content - Add top padding to prevent content being hidden behind fixed navbar */}
-      <main className="flex-grow-1" style={{ paddingTop: '20px' }}>
+      <main className="flex-grow-1" style={{ paddingTop: '10px' }}>
         {children}
       </main>
+
+      <Outlet />
 
       {/* Footer - Similar to previous implementation */}
       <footer className="footer bg-light py-5">

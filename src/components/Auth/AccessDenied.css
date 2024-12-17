@@ -1,0 +1,64 @@
+.access-denied-container {
+    height: 100vh;
+    background: linear-gradient(135deg, #002244, #003366, #001133);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    overflow: hidden;
+  }
+  
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .snow-overlay {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120%;
+    height: 50px;
+    background: linear-gradient(to right, transparent, white, transparent);
+    opacity: 0.7;
+    filter: blur(2px);
+  }
+  
+  @keyframes lightPulse {
+    0% { transform: scale(0.7); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  /* Positioning Tree Lights */
+  .tree-lights .light:nth-child(1) { top: 10%; left: 30%; }
+  .tree-lights .light:nth-child(2) { top: 25%; left: 60%; }
+  .tree-lights .light:nth-child(3) { top: 40%; left: 20%; }
+  .tree-lights .light:nth-child(4) { top: 55%; left: 70%; }
+  .tree-lights .light:nth-child(5) { top: 70%; left: 35%; }
+  .tree-lights .light:nth-child(6) { top: 85%; left: 50%; }
+  .tree-lights .light:nth-child(7) { top: 95%; left: 45%; }
+  
+  /* Stars Styling */
+  .stars-container {
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .star {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+  }
+  
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+  
+  /* Accessibility and Focus */
+  .btn-danger:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255,69,0,0.5);
+  }
