@@ -12,29 +12,39 @@ import {
   House
 } from 'react-bootstrap-icons';
 import { FaCity } from 'react-icons/fa';
-import { PanelBottom, StretchVertical, TrafficConeIcon } from 'lucide-react';
+import { ClipboardTypeIcon, HousePlus, PanelBottom, PencilIcon, Plane, StopCircle, StretchVertical, TrafficConeIcon } from 'lucide-react';
 import { PiFlagBanner } from 'react-icons/pi';
 
 const MENU_ITEMS = [
   { 
-    icon: FaCity, 
-    label: 'Quản lý Tỉnh', 
+    icon: ClipboardTypeIcon, 
+    label: 'Quản Lý Tỉnh', 
     path: '/provinces' 
   },
   { 
-    icon: PiFlagBanner, 
-    label: 'Quản lý Huyện', 
+    icon: StopCircle, 
+    label: 'Quản Lý Huyện', 
     path: '/districts' 
   },
   { 
     icon: TrafficConeIcon, 
-    label: 'Quản lý Đường', 
+    label: 'Quản Lý Đường', 
     path: '/wards' 
   },
   {
-    icon: House, 
+    icon: HousePlus, 
     label: 'Thêm Địa Điểm', 
     path: '/add-property' 
+  },
+  {
+    icon: PencilIcon, 
+    label: 'Quản Lý Địa Điểm', 
+    path: '/property-manager' 
+  },
+  {
+    icon: Plane, 
+    label: 'Quản Lý Booking', 
+    path: '/booking-manager' 
   }
 ];
 

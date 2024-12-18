@@ -11,8 +11,10 @@ import DistrictList from './components/Location/DistrictList';
 import Layout from './components/Layout/Layout';
 import HelpPage from './components/Layout/Help';
 import HomePage from './components/Layout/HomePage';
-import AdminLayout from './components/Layout/AdminLayout';
-import AdminDashboard from './components/Layout/AdminDashboard';
+import AdminLayout from './components/Layout/AdminDash/AdminLayout';
+import AdminDashboard from './components/Layout/AdminDash/AdminDashboard';
+import PropertyManagement from './components/Layout/AdminDash/PropertyManagement';
+import BookingManagement from './components/Layout/AdminDash/BookingManagement';
 import WardList from './components/Location/WardList';
 import AddProvince from './components/Location/AddProvince';
 import AddDistrict from './components/Location/AddDistrict';
@@ -34,6 +36,7 @@ const App = () => {
   const isAuthenticated = localStorage.getItem("accessToken");
   const userRole = localStorage.getItem("role");
   const isAdmin = userRole === "Admin";
+  const isHost = userRole === "Host";
 
   return (
     <Routes>
@@ -136,6 +139,30 @@ const App = () => {
         }
       />
       <Route
+        path="/property-manager"
+        element={
+          isAuthenticated && isAdmin ? (
+            <AdminLayout>
+              <PropertyManagement />
+            </AdminLayout>
+          ) : (
+            <Navigate to="/access-denied" />
+          )
+        }
+      />
+      <Route
+        path="/booking-manager"
+        element={
+          isAuthenticated && isAdmin ? (
+            <AdminLayout>
+              <BookingManagement />
+            </AdminLayout>
+          ) : (
+            <Navigate to="/access-denied" />
+          )
+        }
+      />
+      <Route
         path="/booking-history"
         element={
           isAuthenticated ? (
@@ -162,12 +189,20 @@ const App = () => {
       <Route
         path="/add-property"
         element={
-          isAuthenticated && isAdmin ? (
-            <AdminLayout>
-              <AddProperty />
-            </AdminLayout>
+          isAuthenticated ? (
+            userRole === "Admin" ? (
+              <AdminLayout>
+                <AddProperty /> {/* Route cho Admin */}
+              </AdminLayout>
+            ) : userRole === "Host" ? (
+              <Layout>
+                <AddProperty /> {/* Route cho Host */}
+              </Layout>
+            ) : (
+              <Navigate to="/access-denied" /> // Nếu không phải Admin hoặc Host
+            )
           ) : (
-            <Navigate to="/access-denied" />
+            <Navigate to="/login" /> // Nếu chưa đăng nhập
           )
         }
       />

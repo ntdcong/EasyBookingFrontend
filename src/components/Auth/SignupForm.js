@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Alert, InputGroup } from 'react-bootstrap';
+import { Eye, EyeOff } from 'lucide-react';
+import Snowfall from 'react-snowfall';
 
 const SignupForm = ({ initialData }) => {
   const [formData, setFormData] = useState({
@@ -23,7 +25,6 @@ const SignupForm = ({ initialData }) => {
     const phoneRegex = /^0[0-9]{9}$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    // Validation logic
     if (!formData.firstName.trim()) newErrors.firstName = 'Vui lòng nhập tên';
     if (!formData.lastName.trim()) newErrors.lastName = 'Vui lòng nhập họ';
     if (!formData.email.trim()) {
@@ -78,16 +79,13 @@ const SignupForm = ({ initialData }) => {
 
     try {
       const response = await axios.post('http://localhost:8080/api/v1/auth/signup', formData);
-      
-      // Lưu token vào localStorage
+
       localStorage.setItem('access_token', response.data.data.access_token);
       localStorage.setItem('refresh_token', response.data.data.refresh_token);
       localStorage.setItem('user_id', response.data.data.id);
 
-      // Đánh dấu đăng ký thành công
       setSubmitSuccess(true);
 
-      // Reset form
       setFormData({
         firstName: '',
         lastName: '',
@@ -103,143 +101,165 @@ const SignupForm = ({ initialData }) => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(prev => !prev);
+  };
+
   return (
-    <Container className="py-5">
-      <Row className="justify-content-center">
-        <Col md={6}>
-          <div className="border p-4 rounded shadow-sm">
-            <h2 className="text-center mb-4">Đăng Ký Tài Khoản</h2>
+    <div className="signup-wrapper">
+      <Snowfall />
+      <Container className="py-5">
+        <Row className="justify-content-center align-items-center vh-100">
+          <Col md={6}>
+            <div className="signup-box shadow-lg rounded-4 p-4 bg-white">
+              <h2 className="text-center mb-4 text-primary">Đăng Ký Tài Khoản</h2>
 
-            {submitSuccess && (
-              <Alert variant="success">
-                Đăng ký tài khoản thành công!
-              </Alert>
-            )}
+              {submitSuccess && (
+                <Alert variant="success" className="text-center">
+                  Đăng ký tài khoản thành công!
+                </Alert>
+              )}
 
-            {submitError && (
-              <Alert variant="danger">
-                {submitError}
-              </Alert>
-            )}
+              {submitError && (
+                <Alert variant="danger" className="text-center">
+                  {submitError}
+                </Alert>
+              )}
 
-            <Form onSubmit={handleSubmit}>
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Tên</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      isInvalid={!!errors.firstName}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.firstName}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Họ</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      isInvalid={!!errors.lastName}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.lastName}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
+              <Form onSubmit={handleSubmit}>
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Tên</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        isInvalid={!!errors.firstName}
+                        placeholder="Nhập tên"
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.firstName}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Họ</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        isInvalid={!!errors.lastName}
+                        placeholder="Nhập họ"
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.lastName}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                </Row>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  isInvalid={!!errors.email}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.email}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Số Điện Thoại</Form.Label>
-                <Form.Control
-                  type="tel"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  isInvalid={!!errors.phoneNumber}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.phoneNumber}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Mật Khẩu</Form.Label>
-                <div className="d-flex align-items-center">
+                <Form.Group className="mb-3">
+                  <Form.Label>Email</Form.Label>
                   <Form.Control
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
+                    type="email"
+                    name="email"
+                    value={formData.email}
                     onChange={handleChange}
-                    isInvalid={!!errors.password}
+                    isInvalid={!!errors.email}
+                    placeholder="Nhập email"
                   />
-                  <Button 
-                    variant="link" 
-                    onClick={() => setShowPassword(prev => !prev)}
-                  >
-                    {showPassword ? 'Ẩn' : 'Hiện'}
-                  </Button>
-                </div>
-                <Form.Control.Feedback type="invalid">
-                  {errors.password}
-                </Form.Control.Feedback>
-              </Form.Group>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.email}
+                  </Form.Control.Feedback>
+                </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Xác Nhận Mật Khẩu</Form.Label>
-                <div className="d-flex align-items-center">
+                <Form.Group className="mb-3">
+                  <Form.Label>Số Điện Thoại</Form.Label>
                   <Form.Control
-                    type={showPassword ? "text" : "password"}
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
+                    type="tel"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
                     onChange={handleChange}
-                    isInvalid={!!errors.confirmPassword}
+                    isInvalid={!!errors.phoneNumber}
+                    placeholder="Nhập số điện thoại"
                   />
-                  <Button 
-                    variant="link" 
-                    onClick={() => setShowPassword(prev => !prev)}
-                  >
-                    {showPassword ? 'Ẩn' : 'Hiện'}
-                  </Button>
-                </div>
-                <Form.Control.Feedback type="invalid">
-                  {errors.confirmPassword}
-                </Form.Control.Feedback>
-              </Form.Group>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.phoneNumber}
+                  </Form.Control.Feedback>
+                </Form.Group>
 
-              <Button 
-                variant="primary" 
-                type="submit" 
-                className="w-100"
-              >
-                Đăng Ký
-              </Button>
-            </Form>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+                <Form.Group className="mb-3">
+                  <Form.Label>Mật Khẩu</Form.Label>
+                  <InputGroup>
+                    <Form.Control
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      isInvalid={!!errors.password}
+                      placeholder="Nhập mật khẩu"
+                    />
+                    <Button 
+                      variant="outline-secondary" 
+                      onClick={togglePasswordVisibility}
+                      className="password-toggle"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </Button>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.password}
+                    </Form.Control.Feedback>
+                  </InputGroup>
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Xác Nhận Mật Khẩu</Form.Label>
+                  <InputGroup>
+                    <Form.Control
+                      type={showPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      isInvalid={!!errors.confirmPassword}
+                      placeholder="Nhập lại mật khẩu"
+                    />
+                    <Button 
+                      variant="outline-secondary" 
+                      onClick={togglePasswordVisibility}
+                      className="password-toggle"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </Button>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.confirmPassword}
+                    </Form.Control.Feedback>
+                  </InputGroup>
+                </Form.Group>
+
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className="w-100 mb-3"
+                >
+                  Đăng Ký
+                </Button>
+
+                <div className="text-center">
+                  Đã có tài khoản?{" "}
+                  <a href="/login" className="text-primary text-decoration-none">
+                    Đăng nhập ngay
+                  </a>
+                </div>
+              </Form>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };
 

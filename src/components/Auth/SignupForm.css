@@ -1,0 +1,54 @@
+/* Signup Form Styles */
+.signup-wrapper {
+  position: relative;
+  background-image: url('/christmas.png');
+  background-size: cover;  
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: -1;
+}
+
+.signup-box {
+  background-color: rgba(255, 255, 255, 0.9);
+  max-width: 500px;
+  width: 100%;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.signup-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.password-toggle {
+  background-color: transparent;
+  border-color: #ced4da;
+  color: #6c757d;
+}
+
+.password-toggle:hover {
+  background-color: #f8f9fa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .signup-box {
+    margin: 20px;
+    width: calc(100% - 40px);
+  }
+}
+
+/* Snowfall effect positioning */
+.snowfall-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}

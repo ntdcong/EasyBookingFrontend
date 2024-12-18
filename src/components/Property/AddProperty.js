@@ -1,36 +1,38 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 const AddProperty = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    address: '',
-    wardId: '',
-    placeTypeId: '',
-    propertyTypeId: '',
-    hostId: '',
-    maxGuests: '',
-    numBeds: '',
-    numBedrooms: '',
-    numBathrooms: '',
-    price: '',
+    name: "",
+    address: "",
+    wardId: "",
+    placeTypeId: "",
+    propertyTypeId: "",
+    hostId: "",
+    maxGuests: "",
+    numBeds: "",
+    numBedrooms: "",
+    numBathrooms: "",
+    price: "",
   });
 
+  // Hàm xử lý khi thay đổi giá trị các trường input
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Hàm xử lý khi submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Lấy hostId từ localStorage (Kiểm tra có hostId hợp lệ)
+
+    // Lấy hostId từ localStorage
     const hostId = localStorage.getItem("userId");
     if (!hostId) {
       alert("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.");
       return;
     }
-  
-    // Chuyển đổi các giá trị số thành kiểu số (Int hoặc Float)
+
+    // Chuẩn bị dữ liệu gửi lên API
     const dataToSend = {
       ...formData,
       hostId,
@@ -38,55 +40,64 @@ const AddProperty = () => {
       numBeds: parseInt(formData.numBeds, 10),
       numBedrooms: parseInt(formData.numBedrooms, 10),
       numBathrooms: parseInt(formData.numBathrooms, 10),
-      price: parseFloat(formData.price), // Chuyển price thành float nếu cần
+      price: parseFloat(formData.price),
     };
-  
+
     try {
-      const response = await axios.post("http://localhost:8080/api/v1/properties", dataToSend);
-      alert("Property added successfully!");
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/properties",
+        dataToSend
+      );
+      alert("Thêm địa điểm thành công!");
     } catch (error) {
-      if (error.response) {
-        console.error(error.response.data || error.message);
-        alert(error.response?.data?.message || "Failed to add property.");
-      } else {
-        console.error(error.message);
-        alert("Failed to add property.");
-      }
+      console.error(error);
+      alert(
+        error.response?.data?.message || "Có lỗi xảy ra khi thêm địa điểm."
+      );
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: "600px", margin: "auto" }}>
-      <h2 className="text-center mb-4">Add Property</h2>
+    <form onSubmit={handleSubmit} style={{ maxWidth: "700px", margin: "auto" }}>
+      <h2 className="text-center mb-4">Thêm Địa Điểm</h2>
+
       <div className="mb-3">
-        <label htmlFor="name" className="form-label">Name</label>
+        <label htmlFor="name" className="form-label">
+          Tên Địa Điểm
+        </label>
         <input
           type="text"
           id="name"
           name="name"
           className="form-control"
-          placeholder="Enter property name"
+          placeholder="Nhập tên địa điểm"
           value={formData.name}
           onChange={handleChange}
           required
         />
       </div>
+
       <div className="mb-3">
-        <label htmlFor="address" className="form-label">Address</label>
+        <label htmlFor="address" className="form-label">
+          Địa chỉ
+        </label>
         <input
           type="text"
           id="address"
           name="address"
           className="form-control"
-          placeholder="Enter address"
+          placeholder="Nhập địa chỉ"
           value={formData.address}
           onChange={handleChange}
           required
         />
       </div>
+
       <div className="row">
         <div className="col-md-4 mb-3">
-          <label htmlFor="wardId" className="form-label">Ward ID</label>
+          <label htmlFor="wardId" className="form-label">
+            Ward ID
+          </label>
           <input
             type="text"
             id="wardId"
@@ -98,7 +109,9 @@ const AddProperty = () => {
           />
         </div>
         <div className="col-md-4 mb-3">
-          <label htmlFor="placeTypeId" className="form-label">Place Type ID</label>
+          <label htmlFor="placeTypeId" className="form-label">
+            Place Type ID
+          </label>
           <input
             type="text"
             id="placeTypeId"
@@ -110,7 +123,9 @@ const AddProperty = () => {
           />
         </div>
         <div className="col-md-4 mb-3">
-          <label htmlFor="propertyTypeId" className="form-label">Property Type ID</label>
+          <label htmlFor="propertyTypeId" className="form-label">
+            Property Type ID
+          </label>
           <input
             type="text"
             id="propertyTypeId"
@@ -122,9 +137,12 @@ const AddProperty = () => {
           />
         </div>
       </div>
+
       <div className="row">
         <div className="col-md-3 mb-3">
-          <label htmlFor="maxGuests" className="form-label">Max Guests</label>
+          <label htmlFor="maxGuests" className="form-label">
+            Số khách tối đa
+          </label>
           <input
             type="number"
             id="maxGuests"
@@ -136,7 +154,9 @@ const AddProperty = () => {
           />
         </div>
         <div className="col-md-3 mb-3">
-          <label htmlFor="numBeds" className="form-label">Number of Beds</label>
+          <label htmlFor="numBeds" className="form-label">
+            Số giường
+          </label>
           <input
             type="number"
             id="numBeds"
@@ -148,7 +168,9 @@ const AddProperty = () => {
           />
         </div>
         <div className="col-md-3 mb-3">
-          <label htmlFor="numBedrooms" className="form-label">Number of Bedrooms</label>
+          <label htmlFor="numBedrooms" className="form-label">
+            Số phòng ngủ
+          </label>
           <input
             type="number"
             id="numBedrooms"
@@ -160,7 +182,9 @@ const AddProperty = () => {
           />
         </div>
         <div className="col-md-3 mb-3">
-          <label htmlFor="numBathrooms" className="form-label">Number of Bathrooms</label>
+          <label htmlFor="numBathrooms" className="form-label">
+            Số phòng tắm
+          </label>
           <input
             type="number"
             id="numBathrooms"
@@ -172,20 +196,27 @@ const AddProperty = () => {
           />
         </div>
       </div>
+
       <div className="mb-3">
-        <label htmlFor="price" className="form-label">Price per Night ($)</label>
+        <label htmlFor="price" className="form-label">
+          Giá thuê mỗi đêm (VNĐ)
+        </label>
         <input
           type="number"
           id="price"
           name="price"
           className="form-control"
+          placeholder="Nhập giá thuê"
           value={formData.price}
           onChange={handleChange}
           required
         />
       </div>
+
       <div className="d-grid">
-        <button type="submit" className="btn btn-primary btn-lg">Add Property</button>
+        <button type="submit" className="btn btn-primary btn-lg">
+          Thêm Địa Điểm
+        </button>
       </div>
     </form>
   );
