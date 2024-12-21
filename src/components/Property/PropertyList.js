@@ -6,13 +6,13 @@ import CategoryFilter from '../Layout/CategoryFilter';
 
 const PropertyList = () => {
   const [properties, setProperties] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
       .get('http://localhost:8080/api/v1/properties')
       .then((response) => {
-        // Chuyển object thành mảng, loại bỏ các key không phải property
         const propertiesArray = Object.values(response.data.data)
           .filter(item => item.id && typeof item.id === 'string');
         setProperties(propertiesArray);
@@ -21,6 +21,11 @@ const PropertyList = () => {
         console.error('Lỗi khi lấy danh sách bất động sản!', error);
       });
   }, []);
+
+  // Filter properties based on the search term
+  const filteredProperties = properties.filter(property =>
+    property.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const navigateToDetail = (propertyId) => {
     navigate(`/properties/${propertyId}`);
@@ -32,9 +37,21 @@ const PropertyList = () => {
       <h2 className="mb-4 text-2xl font-semibold text-gray-800" style={{ paddingTop: '20px' }}>
         Khám phá những địa điểm nghỉ dưỡng
       </h2>
+
+      {/* Search Input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Tìm kiếm bất động sản..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <div className="row g-4">
-        {properties.length > 0 ? (
-          properties.map((property) => (
+        {filteredProperties.length > 0 ? (
+          filteredProperties.map((property) => (
             <div className="col-12 col-md-6 col-lg-4" key={property.id}>
               <PropertyCard
                 property={property}
@@ -46,7 +63,7 @@ const PropertyList = () => {
           <div className="col-12">
             <div className="alert alert-info bg-light border-0 rounded-3 shadow-sm">
               <i className="bi bi-info-circle me-2"></i>
-              Chưa có bất động sản nào được đăng tải.
+              Không tìm thấy bất động sản nào.
             </div>
           </div>
         )}

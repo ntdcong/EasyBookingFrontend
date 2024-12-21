@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import ExpBookingModal from './ExpBookingModal'; // Import component modal
 import { 
   Heart, 
   Share2, 
@@ -16,12 +17,12 @@ import {
 } from 'lucide-react';
 
 const formatDate = (dateString) => {
-  if (!dateString || dateString.startsWith('1970-01-01')) return 'Không xác định';
+  if (!dateString || dateString.startsWith('2024-01-01')) return 'Không xác định';
   const date = new Date(dateString);
   return date.toLocaleString('vi-VN', {
     weekday: 'long',
     year: 'numeric',
-    month: 'long',
+    month: 'long',  
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
@@ -37,6 +38,15 @@ const ExperienceDetailPage = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const { id } = useParams();
   const navigate = useNavigate();
+  const [showBookingModal, setShowBookingModal] = useState(false);
+
+  const handleBookingClick = () => {
+    setShowBookingModal(true);
+  };
+
+  const closeBookingModal = () => {
+    setShowBookingModal(false);
+  };
 
   useEffect(() => {
     const fetchExperienceDetail = async () => {
@@ -180,25 +190,33 @@ const ExperienceDetailPage = () => {
         </div>
 
         <div className="col-md-4">
-          <div className="card shadow-lg border-0 rounded-4 sticky-top" style={{ top: '20px' }}>
-            <div className="card-body p-4">
-              <h4 className="mb-3">
-                <strong>{experience.price?.toLocaleString('vi-VN')}₫</strong>
-                <small className="text-muted ms-2">/ người</small>
-              </h4>
-              <div className="d-grid gap-2 mb-3">
-                <button className="btn btn-primary btn-lg rounded-3">Kiểm tra</button>
-                <button className="btn btn-outline-secondary rounded-3">Liên hệ</button>
-              </div>
-              <div className="text-center">
-                <small className="text-muted">
-                  <Award size={16} className="me-1 text-warning" />
-                  Người tổ chức nổi bật
-                </small>
-              </div>
+        <div className="card shadow-lg border-0 rounded-4 sticky-top" style={{ top: '20px' }}>
+          <div className="card-body p-4">
+            <h4 className="mb-3">
+              <strong>{experience.price?.toLocaleString('vi-VN')}₫</strong>
+              <small className="text-muted ms-2">/ người</small>
+            </h4>
+            <div className="d-grid gap-2 mb-3">
+              <button
+                className="btn btn-primary btn-lg rounded-3"
+                onClick={handleBookingClick}
+              >
+                Đặt Ngay
+              </button>
+              <button className="btn btn-outline-secondary rounded-3">Liên hệ</button>
             </div>
           </div>
         </div>
+      </div>
+
+      {showBookingModal && (
+        <ExpBookingModal
+        show={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        experienceId={experience?.id} // Đảm bảo id này là UUID hợp lệ
+        experiencePrice={experience?.price}
+      />
+      )}
       </div>
     </div>
   );

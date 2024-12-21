@@ -171,34 +171,6 @@ const HomePage = () => {
                     </div>
                 </div>
 
-                {/* Rest of the sections (Featured Destinations, Experiences, Properties, CTA) remain the same */}
-                {/* Featured Destinations */}
-                <div className="row mb-5">
-                    <div className="col-12">
-                        <h2 className="h4 mb-4">Điểm đến nổi bật</h2>
-                        <div className="row g-4">
-                            {featuredDestinations.map((dest, index) => (
-                                <div key={index} className="col-6 col-md-3">
-                                    <div className="card border-0 overflow-hidden">
-                                        <img
-                                            src={dest.image}
-                                            className="card-img-top"
-                                            alt={dest.name}
-                                            style={{ height: '250px', objectFit: 'cover' }}
-                                        />
-                                        <div className="card-img-overlay d-flex align-items-end p-0">
-                                            <h5 className="card-title w-100 text-white text-center py-2"
-                                                style={{ background: 'rgba(0,0,0,0.5)' }}>
-                                                {dest.name}
-                                            </h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
                 {/* Experiences */}
                 <div className="row mb-5">
                     <div className="col-12">
@@ -213,55 +185,6 @@ const HomePage = () => {
                                             </div>
                                             <h5 className="card-title">{exp.title}</h5>
                                             <p className="card-text text-muted">{exp.description}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Properties Grid */}
-                <div className="row mb-5">
-                    <div className="col-12">
-                        <h2 className="h4 mb-4">Chỗ ở gần bạn</h2>
-                        <div className="row g-4">
-                            {properties.map((property) => (
-                                <div key={property.id} className="col-md-4">
-                                    <div className="card border-0 shadow-sm">
-                                        <div className="position-relative">
-                                            <img
-                                                src={property.image}
-                                                className="card-img-top"
-                                                alt={property.name}
-                                                style={{ height: '250px', objectFit: 'cover' }}
-                                            />
-                                            <div className="position-absolute top-0 end-0 p-2">
-                                                <button className="btn btn-sm btn-light rounded-circle">
-                                                    <i className="bi bi-heart"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="card-body">
-                                            <div className="d-flex justify-content-between align-items-start mb-2">
-                                                <div>
-                                                    <h5 className="card-title mb-1">{property.name}</h5>
-                                                    <small className="text-muted">{property.type} · Chủ nhà {property.hostName}</small>
-                                                </div>
-                                                <div className="d-flex align-items-center">
-                                                    <i className="bi bi-star-fill text-warning me-1"></i>
-                                                    <span>{property.rating}</span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <strong>{property.price.toLocaleString()} VND</strong>
-                                                    <small className="text-muted"> /đêm</small>
-                                                </div>
-                                                <div className="text-end">
-                                                    <button className="btn btn-sm btn-outline-primary">Xem chi tiết</button>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>

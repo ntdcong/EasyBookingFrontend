@@ -25,7 +25,6 @@ import AddProperty from './components/Property/AddProperty';
 import PropertyList from './components/Property/PropertyList';
 import BookingHistory from './components/Property/BookingHistory';
 import PropertyDetail from './components/Property/PropertyDetail';
-import SuggestedPlaces from './components/Property/SuggestedPlaces';
 import SignupForm from './components/Auth/SignupForm';
 import LoginForm from './components/Auth/LoginForm';
 import AccountTypeSelection from './components/Auth/AccountTypeSelection';

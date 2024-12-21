@@ -15,6 +15,8 @@ const BookingModal = ({ propertyId, price, onClose }) => {
     const [existingBookings, setExistingBookings] = useState([]);  // Dòng thêm vào
     const { id } = useParams(); // Danh sách các booking đã có
     const [property, setProperty] = useState(null);
+    const [paymentUrl, setPaymentUrl] = useState(null);
+    const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
 
     useEffect(() => {
         // Lấy thông tin bất động sản
@@ -36,7 +38,7 @@ const BookingModal = ({ propertyId, price, onClose }) => {
                 setBookedDates(dates);
             })
             .catch((error) => {
-                console.error('Lỗi khi lấy danh sách booking!', error);
+                console.error('Lỗi khi lấy danh sách booking !', error);
                 setError('Could not load booked dates');
             });
 
@@ -64,7 +66,7 @@ const BookingModal = ({ propertyId, price, onClose }) => {
 
     // Check if date is booked
     const isDateBooked = (date) => {
-        return bookedDates.some(bookedDate => 
+        return bookedDates.some(bookedDate =>
             isSameDay(new Date(bookedDate), date)
         );
     };
@@ -80,7 +82,7 @@ const BookingModal = ({ propertyId, price, onClose }) => {
     const filterDate = (date) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         // Disable past dates and booked dates
         return date >= today && !isDateBooked(date);
     };
@@ -139,21 +141,42 @@ const BookingModal = ({ propertyId, price, onClose }) => {
 
         try {
             const response = await axios.post('http://localhost:8080/api/v1/bookings', bookingData);
-            alert('Đặt phòng thành công!');
-            onClose();
+            // Mở modal yêu cầu thanh toán
+            setIsPaymentModalVisible(true);
         } catch (err) {
             const errorData = err.response?.data;
-
             if (errorData?.statusCode === 422 && errorData?.message === 'Property is not available for the selected dates') {
                 setError('Ngày này đã được đặt. Vui lòng chọn ngày khác.');
             } else {
-                setError('Đã có lỗi xảy ra khi đặt phòng. Vui lòng thử lại.');
+                setError('Vui lòng đăng nhập để đặt phòng.');
             }
-
             console.error('Booking error:', errorData || err.message);
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handlePayment = async () => {
+        const bookingId = 'booking-id'; // ID đặt phòng đã nhận được từ API đặt phòng trước đó
+        const userId = localStorage.getItem('userId') || '98142f0b-0c77-47de-a980-7b58f08abc80';
+        const paymentData = { userId };
+
+        try {
+            const response = await axios.post(`http://localhost:8080/api/v1/bookings/${bookingId}/payment`, paymentData);
+            const paymentUrl = response.data.paymentUrl;
+            setPaymentUrl(paymentUrl);
+
+            // Mở tab mới với URL thanh toán
+            window.open(paymentUrl, '_blank');
+        } catch (error) {
+            console.error('Payment error:', error);
+        }
+    };
+
+    const handleClosePaymentModal = () => {
+        setIsPaymentModalVisible(false);
+        setPaymentUrl(null);
+        onClose(); // Close the main modal
     };
 
     const priceCalculation = calculateTotalPrice();
@@ -176,86 +199,118 @@ const BookingModal = ({ propertyId, price, onClose }) => {
         );
     }
 
-    return (
-<div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.6)', position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1050 }}>
-    <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: '550px', margin: '1.75rem auto' }}>
-        <div className="modal-content" style={{ border: 'none', borderRadius: '16px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
-            <div className="modal-header" style={{ padding: '24px', borderBottom: '1px solid #eee' }}>
-                <h5 className="modal-title" style={{ fontSize: '22px', fontWeight: '600', color: '#222', margin: 0 }}>Xác nhận đặt phòng</h5>
-                <button type="button" className="btn-close" onClick={onClose} style={{ background: 'none', border: 'none', padding: '8px', borderRadius: '50%', cursor: 'pointer' }}></button>
-            </div>
-            <div className="modal-body" style={{ padding: '24px' }}>
-                <form onSubmit={handleBooking}>
-                    <div className="mb-3" style={{ marginBottom: '20px' }}>
-                        <label className="form-label" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#222', marginBottom: '8px' }}>Ngày nhận phòng</label>
-                        <DatePicker
-                            selected={checkin}
-                            onChange={date => setCheckin(date)}
-                            minDate={new Date()}
-                            filterDate={filterDate}
-                            className="form-control"
-                            dateFormat="dd/MM/yyyy"
-                            style={{ width: '100%', padding: '12px', border: '1px solid #dadada', borderRadius: '8px', fontSize: '15px' }}
-                        />
+return (
+    <>
+        <div>
+            {/* Modal xác nhận thanh toán */}
+            {isPaymentModalVisible && (
+                <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)', position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1050 }}>
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Thanh toán</h5>
+                                <button type="button" className="btn-close" onClick={handleClosePaymentModal}></button>
+                            </div>
+                            <div className="modal-body">
+                                {paymentUrl && (
+                                    <div className="text-center">
+                                        <p>Vui lòng click vào nút bên dưới để tiến hành thanh toán</p>
+                                        <a 
+                                            href={paymentUrl} 
+                                            className="btn btn-primary"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Tiến hành thanh toán
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
-                    <div className="mb-3" style={{ marginBottom: '20px' }}>
-                        <label className="form-label" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#222', marginBottom: '8px' }}>Ngày trả phòng</label>
-                        <DatePicker
-                            selected={checkout}
-                            onChange={date => setCheckout(date)}
-                            minDate={checkin ? addDays(checkin, 1) : new Date()}
-                            filterDate={filterDate}
-                            className="form-control"
-                            dateFormat="dd/MM/yyyy"
-                            style={{ width: '100%', padding: '12px', border: '1px solid #dadada', borderRadius: '8px', fontSize: '15px' }}
-                        />
-                    </div>
-                    <div className="mb-3" style={{ marginBottom: '20px' }}>
-                        <label className="form-label" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#222', marginBottom: '8px' }}>Số lượng khách</label>
-                        <select
-                            className="form-select"
-                            value={guests}
-                            onChange={(e) => setGuests(Number(e.target.value))}
-                            required
-                            style={{ width: '100%', padding: '12px', border: '1px solid #dadada', borderRadius: '8px', fontSize: '15px' }}
-                        >
-                            {[...Array(property.maxGuests)].map((_, i) => (
-                                <option key={i + 1} value={i + 1}>{i + 1} khách</option>
-                            ))}
-                        </select>
-                    </div>
+                </div>
+            )}
+        </div>
 
-                    <div className="border-top pt-3 mb-3" style={{ borderTop: '1px solid #eee', paddingTop: '16px', marginBottom: '20px' }}>
-                        <div className="d-flex justify-content-between mb-2" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#666', fontSize: '15px' }}>
-                            <span>Giá thuê ({checkin && checkout ? `${Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24))} đêm` : ''})</span>
-                            <span>{priceCalculation.subtotal.toLocaleString()} VND</span>
-                        </div>
-                        <div className="d-flex justify-content-between mb-2" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#666', fontSize: '15px' }}>
-                            <span>Phí dọn dẹp</span>
-                            <span>{priceCalculation.cleaningFee.toLocaleString()} VND</span>
-                        </div>
-                        <div className="d-flex justify-content-between mb-2" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#666', fontSize: '15px' }}>
-                            <span>Phí dịch vụ</span>
-                            <span>{priceCalculation.serviceFee.toLocaleString()} VND</span>
-                        </div>
-                        <div className="d-flex justify-content-between fw-bold border-top pt-2" style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #eee', paddingTop: '16px', fontWeight: '600', fontSize: '17px' }}>
-                            <span>Tổng cộng</span>
-                            <span>{priceCalculation.total.toLocaleString()} VND</span>
-                        </div>
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.6)', position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1050 }}>
+            <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: '550px', margin: '1.75rem auto' }}>
+                <div className="modal-content" style={{ border: 'none', borderRadius: '16px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+                    <div className="modal-header" style={{ padding: '24px', borderBottom: '1px solid #eee' }}>
+                        <h5 className="modal-title" style={{ fontSize: '22px', fontWeight: '600', color: '#222', margin: 0 }}>Xác nhận đặt phòng</h5>
+                        <button type="button" className="btn-close" onClick={onClose} style={{ background: 'none', border: 'none', padding: '8px', borderRadius: '50%', cursor: 'pointer' }}></button>
                     </div>
-                    <div className="d-flex justify-content-center" style={{ display: 'flex', justifyContent: 'center' }}>
-                        <button type="submit" className="btn btn-primary" disabled={isLoading} style={{ width: '100%', padding: '14px 24px', border: 'none', borderRadius: '8px', background: 'linear-gradient(to right, #E61E4D, #E31C5F)', color: 'white', fontWeight: '500', fontSize: '16px', cursor: 'pointer' }}>
-                            {isLoading ? 'Đang xử lý...' : 'Đặt phòng'}
-                        </button>
+                    <div className="modal-body" style={{ padding: '24px' }}>
+                        <form onSubmit={handleBooking}>
+                            <div className="mb-3" style={{ marginBottom: '20px' }}>
+                                <label className="form-label" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#222', marginBottom: '8px' }}>Ngày nhận phòng</label>
+                                <DatePicker
+                                    selected={checkin}
+                                    onChange={date => setCheckin(date)}
+                                    minDate={new Date()}
+                                    filterDate={filterDate}
+                                    className="form-control"
+                                    dateFormat="dd/MM/yyyy"
+                                    style={{ width: '100%', padding: '12px', border: '1px solid #dadada', borderRadius: '8px', fontSize: '15px' }}
+                                />
+                            </div>
+                            <div className="mb-3" style={{ marginBottom: '20px' }}>
+                                <label className="form-label" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#222', marginBottom: '8px' }}>Ngày trả phòng</label>
+                                <DatePicker
+                                    selected={checkout}
+                                    onChange={date => setCheckout(date)}
+                                    minDate={checkin ? addDays(checkin, 1) : new Date()}
+                                    filterDate={filterDate}
+                                    className="form-control"
+                                    dateFormat="dd/MM/yyyy"
+                                    style={{ width: '100%', padding: '12px', border: '1px solid #dadada', borderRadius: '8px', fontSize: '15px' }}
+                                />
+                            </div>
+                            <div className="mb-3" style={{ marginBottom: '20px' }}>
+                                <label className="form-label" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#222', marginBottom: '8px' }}>Số lượng khách</label>
+                                <select
+                                    className="form-select"
+                                    value={guests}
+                                    onChange={(e) => setGuests(Number(e.target.value))}
+                                    required
+                                    style={{ width: '100%', padding: '12px', border: '1px solid #dadada', borderRadius: '8px', fontSize: '15px' }}
+                                >
+                                    {[...Array(property.maxGuests)].map((_, i) => (
+                                        <option key={i + 1} value={i + 1}>{i + 1} khách</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="border-top pt-3 mb-3" style={{ borderTop: '1px solid #eee', paddingTop: '16px', marginBottom: '20px' }}>
+                                <div className="d-flex justify-content-between mb-2" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#666', fontSize: '15px' }}>
+                                    <span>Giá thuê ({checkin && checkout ? `${Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24))} đêm` : ''})</span>
+                                    <span>{priceCalculation.subtotal.toLocaleString()} VND</span>
+                                </div>
+                                <div className="d-flex justify-content-between mb-2" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#666', fontSize: '15px' }}>
+                                    <span>Phí dọn dẹp</span>
+                                    <span>{priceCalculation.cleaningFee.toLocaleString()} VND</span>
+                                </div>
+                                <div className="d-flex justify-content-between mb-2" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#666', fontSize: '15px' }}>
+                                    <span>Phí dịch vụ</span>
+                                    <span>{priceCalculation.serviceFee.toLocaleString()} VND</span>
+                                </div>
+                                <div className="d-flex justify-content-between fw-bold border-top pt-2" style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #eee', paddingTop: '16px', fontWeight: '600', fontSize: '17px' }}>
+                                    <span>Tổng cộng</span>
+                                    <span>{priceCalculation.total.toLocaleString()} VND</span>
+                                </div>
+                            </div>
+                            <div className="d-flex justify-content-center" style={{ display: 'flex', justifyContent: 'center' }}>
+                                <button type="submit" className="btn btn-primary" disabled={isLoading} style={{ width: '100%', padding: '14px 24px', border: 'none', borderRadius: '8px', background: 'linear-gradient(to right, #E61E4D, #E31C5F)', color: 'white', fontWeight: '500', fontSize: '16px', cursor: 'pointer' }}>
+                                    {isLoading ? 'Đang xử lý...' : 'Đặt phòng'}
+                                </button>
+                            </div>
+                            {error && <div className="text-danger mt-3" style={{ marginTop: '16px', padding: '12px', backgroundColor: '#fff8f8', border: '1px solid #fee2e2', borderRadius: '8px', color: '#dc3545', fontSize: '14px' }}>{error}</div>}
+                        </form>
                     </div>
-                    {error && <div className="text-danger mt-3" style={{ marginTop: '16px', padding: '12px', backgroundColor: '#fff8f8', border: '1px solid #fee2e2', borderRadius: '8px', color: '#dc3545', fontSize: '14px' }}>{error}</div>}
-                </form>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-    );
+    </>
+);
 };
 
 export default BookingModal;

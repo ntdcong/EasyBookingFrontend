@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import axios from 'axios';
 import './Layout.css';
 import './Navbar.css';
 import './Footer.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import SearchBar from './SearchBar';
 import LoginModal from '../Modal/LoginModal';
-import ProfilePage from '../Auth/ProfilePage';
-import { Modal } from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown';
+
 
 
 
@@ -52,23 +49,6 @@ const Layout = ({ children }) => {
           <Link className="navbar-brand d-flex align-items-center" to="/">
             <span className="fw-bold text-danger">EasyBooking</span>
           </Link>
-
-          {/* Center Search Bar - Only on larger screens */}
-          <div className="d-none d-md-block flex-grow-1 mx-4">
-            <div className="input-group rounded-pill shadow-sm">
-              <input
-                type="text"
-                className="form-control rounded-start-pill border-0 ps-4"
-                placeholder="Start your search"
-              />
-              <button
-                className="btn btn-danger rounded-end-pill px-3"
-                type="button"
-              >
-                <i className="fas fa-search"></i>
-              </button>
-            </div>
-          </div>
 
           {/* Right Side Navigation */}
           <div className="d-flex align-items-center">
