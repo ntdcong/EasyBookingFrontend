@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import PropertySlide from '../Property/PropertySlide';
+import CategoryFilter from './CategoryFilter';
 
 const HomePage = () => {
     const [properties] = useState([
@@ -90,6 +92,7 @@ const HomePage = () => {
                     <source src="/background.mp4" type="video/mp4" />
                     Trình duyệt của bạn không hỗ trợ video.
                 </video>
+                
 
                 <div className="container h-100" style={{ cursor: 'pointer' }} onClick={handleVideoClick}>
                     <div className="row h-100 align-items-center justify-content-center">
@@ -135,6 +138,9 @@ const HomePage = () => {
                 </div>
             </div>
 
+            <CategoryFilter/>                        
+
+            <PropertySlide/>
 
             {/* Property Type Filters */}
             <div className="container px-4 py-5">

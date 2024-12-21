@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { Modal } from 'bootstrap';
 
 const PropertyDetail = () => {
     const { id } = useParams();
@@ -17,11 +16,10 @@ const PropertyDetail = () => {
     const openBookingModal = () => {
         setIsBookingModalOpen(true);
     };
-
+    
     const closeBookingModal = () => {
         setIsBookingModalOpen(false);
     };
-
 
     useEffect(() => {
         axios
@@ -30,7 +28,7 @@ const PropertyDetail = () => {
                 setProperty(response.data.data);
             })
             .catch((error) => {
-                console.error('Lỗi khi lấy thông tin chi tiết bất động sản!', error);
+                console.error('Lỗi khi lấy thông tin chi tiết bất động sản !', error);
             });
     }, [id]);
 
@@ -67,9 +65,9 @@ const PropertyDetail = () => {
     const displayImages = images.slice(0, 5);
 
     return (
-        <div className="container-fluid px-4 py-3" style={{ maxWidth: '1160px' }}>
+        <div className="container-fluid px-4 py-3" style={{ maxWidth: '1160px'}} >
             {/* Header */}
-            <h1 className="h3 mb-3">{property.name}</h1>
+            <h1 className="h3 mb-3" style={{ paddingTop: '20px' }}>{property.name}</h1>
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <div className="d-flex align-items-center gap-2">
                     <span className="d-flex align-items-center">
@@ -297,7 +295,7 @@ const PropertyDetail = () => {
                                 className="btn btn-primary w-100"
                                 onClick={openBookingModal}
                             >
-                                Đặt phòng
+                                Đặt Phòng
                             </button>
 
                             {isBookingModalOpen && (

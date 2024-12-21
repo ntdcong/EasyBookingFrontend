@@ -1,224 +1,286 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Container, Form, Button, Card } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 
 const AddProperty = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    wardId: "",
-    placeTypeId: "",
-    propertyTypeId: "",
-    hostId: "",
-    maxGuests: "",
-    numBeds: "",
-    numBedrooms: "",
-    numBathrooms: "",
-    price: "",
+    name: '',
+    address: '',
+    wardId: '',
+    placeTypeId: '',
+    propertyTypeId: '',
+    maxGuests: 1,
+    numBeds: 1,
+    numBedrooms: 1,
+    numBathrooms: 1,
+    price: 0
   });
 
-  // Hàm xử lý khi thay đổi giá trị các trường input
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [placeTypes, setPlaceTypes] = useState([]);
+  const [propertyTypes, setPropertyTypes] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch và xử lý riêng từng API để xử lý lỗi tốt hơn
+        try {
+          const placeTypesRes = await axios.get('http://localhost:8080/api/v1/place-type');
+          // Dữ liệu trả về có dạng object với key 'placeTypes'
+          setPlaceTypes(placeTypesRes.data.placeTypes || []);
+        } catch (error) {
+          console.error('Error fetching place types:', error.response?.data || error.message);
+          setPlaceTypes([]);
+        }
+  
+        try {
+          const propertyTypesRes = await axios.get('http://localhost:8080/api/v1/property-types');
+          setPropertyTypes(Array.isArray(propertyTypesRes.data) ? propertyTypesRes.data : []);
+        } catch (error) {
+          console.error('Error fetching property types:', error.response?.data || error.message);
+          setPropertyTypes([]);
+        }
+  
+        try {
+          const wardsRes = await axios.get('http://localhost:8080/api/v1/wards');
+          setWards(Array.isArray(wardsRes.data) ? wardsRes.data : []);
+        } catch (error) {
+          console.error('Error fetching wards:', error.response?.data || error.message);
+          setWards([]);
+        }
+      } catch (error) {
+        console.error('Error in fetchData:', error);
+        toast.error('Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau!');
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  // Hàm xử lý khi submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Lấy hostId từ localStorage
-    const hostId = localStorage.getItem("userId");
-    if (!hostId) {
-      alert("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.");
-      return;
-    }
-
-    // Chuẩn bị dữ liệu gửi lên API
-    const dataToSend = {
-      ...formData,
-      hostId,
-      maxGuests: parseInt(formData.maxGuests, 10),
-      numBeds: parseInt(formData.numBeds, 10),
-      numBedrooms: parseInt(formData.numBedrooms, 10),
-      numBathrooms: parseInt(formData.numBathrooms, 10),
-      price: parseFloat(formData.price),
-    };
+    setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/properties",
-        dataToSend
-      );
-      alert("Thêm địa điểm thành công!");
+      const hostId = localStorage.getItem('userId');
+      const payload = {
+        ...formData,
+        hostId,
+        maxGuests: parseInt(formData.maxGuests),
+        numBeds: parseInt(formData.numBeds),
+        numBedrooms: parseInt(formData.numBedrooms),
+        numBathrooms: parseInt(formData.numBathrooms),
+        price: parseInt(formData.price)
+      };
+
+      await axios.post('http://localhost:8080/api/v1/properties', payload);
+      toast.success('Thêm địa điểm thành công!');
+      // Reset form
+      setFormData({
+        name: '',
+        address: '',
+        wardId: '',
+        placeTypeId: '',
+        propertyTypeId: '',
+        maxGuests: 1,
+        numBeds: 1,
+        numBedrooms: 1,
+        numBathrooms: 1,
+        price: 0
+      });
     } catch (error) {
-      console.error(error);
-      alert(
-        error.response?.data?.message || "Có lỗi xảy ra khi thêm địa điểm."
-      );
+      toast.error('Có lỗi xảy ra. Vui lòng thử lại!');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: "700px", margin: "auto" }}>
-      <h2 className="text-center mb-4">Thêm Địa Điểm</h2>
+    <Container className="py-5">
+      <Card className="shadow-sm">
+        <Card.Body>
+          <h2 className="text-center mb-4">Thêm Địa Điểm Mới</h2>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Tên địa điểm</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                placeholder="Nhập tên địa điểm"
+              />
+            </Form.Group>
 
-      <div className="mb-3">
-        <label htmlFor="name" className="form-label">
-          Tên Địa Điểm
-        </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          className="form-control"
-          placeholder="Nhập tên địa điểm"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-      </div>
+            <Form.Group className="mb-3">
+              <Form.Label>Địa chỉ</Form.Label>
+              <Form.Control
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                required
+                placeholder="Nhập địa chỉ"
+              />
+            </Form.Group>
 
-      <div className="mb-3">
-        <label htmlFor="address" className="form-label">
-          Địa chỉ
-        </label>
-        <input
-          type="text"
-          id="address"
-          name="address"
-          className="form-control"
-          placeholder="Nhập địa chỉ"
-          value={formData.address}
-          onChange={handleChange}
-          required
-        />
-      </div>
+            <Form.Group className="mb-3">
+              <Form.Label>Phường/Xã</Form.Label>
+              <Form.Select
+                name="wardId"
+                value={formData.wardId}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Chọn phường/xã</option>
+                {wards.map(ward => (
+                  <option key={ward.id} value={ward.id}>
+                    {ward.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
 
-      <div className="row">
-        <div className="col-md-4 mb-3">
-          <label htmlFor="wardId" className="form-label">
-            Ward ID
-          </label>
-          <input
-            type="text"
-            id="wardId"
-            name="wardId"
-            className="form-control"
-            value={formData.wardId}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="col-md-4 mb-3">
-          <label htmlFor="placeTypeId" className="form-label">
-            Place Type ID
-          </label>
-          <input
-            type="text"
-            id="placeTypeId"
-            name="placeTypeId"
-            className="form-control"
-            value={formData.placeTypeId}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="col-md-4 mb-3">
-          <label htmlFor="propertyTypeId" className="form-label">
-            Property Type ID
-          </label>
-          <input
-            type="text"
-            id="propertyTypeId"
-            name="propertyTypeId"
-            className="form-control"
-            value={formData.propertyTypeId}
-            onChange={handleChange}
-            required
-          />
-        </div>
-      </div>
+            <div className="row">
+              <div className="col-md-6">
+                <Form.Group className="mb-3">
+                  <Form.Label>Loại địa điểm</Form.Label>
+                  <Form.Select
+                    name="placeTypeId"
+                    value={formData.placeTypeId}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Chọn loại địa điểm</option>
+                    {placeTypes.map(type => (
+                      <option key={type.id} value={type.id}>
+                        {type.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </div>
+              
+              <div className="col-md-6">
+                <Form.Group className="mb-3">
+                  <Form.Label>Loại bất động sản</Form.Label>
+                  <Form.Select
+                    name="propertyTypeId"
+                    value={formData.propertyTypeId}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Chọn loại bất động sản</option>
+                    {propertyTypes.map(type => (
+                      <option key={type.id} value={type.id}>
+                        {type.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </div>
+            </div>
 
-      <div className="row">
-        <div className="col-md-3 mb-3">
-          <label htmlFor="maxGuests" className="form-label">
-            Số khách tối đa
-          </label>
-          <input
-            type="number"
-            id="maxGuests"
-            name="maxGuests"
-            className="form-control"
-            value={formData.maxGuests}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="col-md-3 mb-3">
-          <label htmlFor="numBeds" className="form-label">
-            Số giường
-          </label>
-          <input
-            type="number"
-            id="numBeds"
-            name="numBeds"
-            className="form-control"
-            value={formData.numBeds}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="col-md-3 mb-3">
-          <label htmlFor="numBedrooms" className="form-label">
-            Số phòng ngủ
-          </label>
-          <input
-            type="number"
-            id="numBedrooms"
-            name="numBedrooms"
-            className="form-control"
-            value={formData.numBedrooms}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="col-md-3 mb-3">
-          <label htmlFor="numBathrooms" className="form-label">
-            Số phòng tắm
-          </label>
-          <input
-            type="number"
-            id="numBathrooms"
-            name="numBathrooms"
-            className="form-control"
-            value={formData.numBathrooms}
-            onChange={handleChange}
-            required
-          />
-        </div>
-      </div>
+            <div className="row">
+              <div className="col-md-6">
+                <Form.Group className="mb-3">
+                  <Form.Label>Số khách tối đa</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="maxGuests"
+                    value={formData.maxGuests}
+                    onChange={handleInputChange}
+                    required
+                    min="1"
+                  />
+                </Form.Group>
+              </div>
+              
+              <div className="col-md-6">
+                <Form.Group className="mb-3">
+                  <Form.Label>Số giường</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="numBeds"
+                    value={formData.numBeds}
+                    onChange={handleInputChange}
+                    required
+                    min="1"
+                  />
+                </Form.Group>
+              </div>
+            </div>
 
-      <div className="mb-3">
-        <label htmlFor="price" className="form-label">
-          Giá thuê mỗi đêm (VNĐ)
-        </label>
-        <input
-          type="number"
-          id="price"
-          name="price"
-          className="form-control"
-          placeholder="Nhập giá thuê"
-          value={formData.price}
-          onChange={handleChange}
-          required
-        />
-      </div>
+            <div className="row">
+              <div className="col-md-6">
+                <Form.Group className="mb-3">
+                  <Form.Label>Số phòng ngủ</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="numBedrooms"
+                    value={formData.numBedrooms}
+                    onChange={handleInputChange}
+                    required
+                    min="1"
+                  />
+                </Form.Group>
+              </div>
+              
+              <div className="col-md-6">
+                <Form.Group className="mb-3">
+                  <Form.Label>Số phòng tắm</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="numBathrooms"
+                    value={formData.numBathrooms}
+                    onChange={handleInputChange}
+                    required
+                    min="1"
+                  />
+                </Form.Group>
+              </div>
+            </div>
 
-      <div className="d-grid">
-        <button type="submit" className="btn btn-primary btn-lg">
-          Thêm Địa Điểm
-        </button>
-      </div>
-    </form>
+            <Form.Group className="mb-4">
+              <Form.Label>Giá/đêm (VNĐ)</Form.Label>
+              <Form.Control
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleInputChange}
+                required
+                min="0"
+                step="1000"
+              />
+            </Form.Group>
+
+            <div className="text-center">
+              <Button 
+                variant="primary" 
+                type="submit" 
+                size="lg"
+                disabled={loading}
+                className="px-5"
+              >
+                {loading ? 'Đang xử lý...' : 'Thêm địa điểm'}
+              </Button>
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 

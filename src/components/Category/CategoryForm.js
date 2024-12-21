@@ -1,7 +1,7 @@
-// src/components/CategoryForm.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
 
 const CategoryForm = () => {
   const [categoryName, setCategoryName] = useState('');
@@ -11,6 +11,10 @@ const CategoryForm = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [categories, setCategories] = useState([]); // State để lưu danh sách danh mục
+  const [showModal, setShowModal] = useState(false); // State để hiển thị modal
+  const [selectedCategory, setSelectedCategory] = useState(null); // State cho danh mục được chọn để cập nhật
+  const [updatedCategoryName, setUpdatedCategoryName] = useState('');
+
   const navigate = useNavigate();
 
   // Hàm gọi API để lấy danh sách danh mục
@@ -51,17 +55,34 @@ const CategoryForm = () => {
 
         // Cập nhật danh sách danh mục
         fetchCategories(); // Gọi lại để lấy danh sách mới sau khi thêm thành công
-
-        // Chuyển hướng về danh sách danh mục sau 2 giây
-        setTimeout(() => {
-          navigate('/categories');
-        }, 2000);
       })
       .catch((error) => {
         console.error('Có lỗi xảy ra khi tạo danh mục!', error);
         setError('Lỗi khi thêm danh mục. Vui lòng thử lại.');
         setMessage('');
       });
+  };
+
+  const handleOpenModal = (category) => {
+    setSelectedCategory(category);
+    setUpdatedCategoryName(category.category_name);
+    setShowModal(true);
+  };
+
+  const handleUpdateCategory = async () => {
+    try {
+      await axios.patch(`http://localhost:8080/api/v1/categories/${selectedCategory.id}`, {
+        categoryName: updatedCategoryName,
+      });
+      setMessage('Cập nhật danh mục thành công!');
+      setError('');
+      setShowModal(false);
+      fetchCategories(); // Cập nhật danh sách danh mục sau khi cập nhật thành công
+    } catch (err) {
+      console.error('Có lỗi xảy ra khi cập nhật danh mục!', err);
+      setError('Lỗi khi cập nhật danh mục.');
+      setMessage('');
+    }
   };
 
   return (
@@ -76,6 +97,7 @@ const CategoryForm = () => {
               <th>Mô Tả</th>
               <th>Slug</th>
               <th>Biểu Tượng</th>
+              <th>Hành Động</th>
             </tr>
           </thead>
           <tbody>
@@ -85,6 +107,14 @@ const CategoryForm = () => {
                 <td>{category.description}</td>
                 <td>{category.slug}</td>
                 <td>{category.icon}</td>
+                <td>
+                  <button 
+                    className="btn btn-warning btn-sm me-2"
+                    onClick={() => handleOpenModal(category)}
+                  >
+                    Cập Nhật
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -143,6 +173,34 @@ const CategoryForm = () => {
       </div>
       {message && <div className="alert alert-success mt-3">{message}</div>}
       {error && <div className="alert alert-danger mt-3">{error}</div>}
+
+      {/* Modal cập nhật danh mục */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Cập Nhật Danh Mục</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="form-group">
+            <label htmlFor="updatedCategoryName">Tên Danh Mục:</label>
+            <input
+              type="text"
+              className="form-control"
+              id="updatedCategoryName"
+              value={updatedCategoryName}
+              onChange={(e) => setUpdatedCategoryName(e.target.value)}
+              required
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Hủy
+          </Button>
+          <Button variant="primary" onClick={handleUpdateCategory}>
+            Lưu Thay Đổi
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

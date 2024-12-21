@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PropertyCard from './PropertyCard';
+import CategoryFilter from '../Layout/CategoryFilter';
 
 const PropertyList = () => {
   const [properties, setProperties] = useState([]);
@@ -27,7 +28,8 @@ const PropertyList = () => {
 
   return (
     <div className="container py-5">
-      <h2 className="mb-4 text-2xl font-semibold text-gray-800">
+      <CategoryFilter/>
+      <h2 className="mb-4 text-2xl font-semibold text-gray-800" style={{ paddingTop: '20px' }}>
         Khám phá những địa điểm nghỉ dưỡng
       </h2>
       <div className="row g-4">

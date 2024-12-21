@@ -13,7 +13,6 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
-import './LoginForm.css'; // Thêm tệp CSS của bạn
 
 const SnowEffect = () => {
   return (
@@ -77,9 +76,7 @@ const LoginForm = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div
-      className="position-relative d-flex justify-content-center align-items-center"
-    >
+    <div className="position-relative d-flex justify-content-center align-items-center" style={{ paddingTop: '120px' }}>
       {/* Hiệu ứng tuyết rơi */}
       <SnowEffect />
 
@@ -231,7 +228,7 @@ const LoginForm = ({ onLoginSuccess }) => {
           background: "rgba(255, 255, 255, 0.7)",
           backdropFilter: "blur(10px)",
           border: "2px solid #2196f3",
-          zIndex: 10,
+          zIndex: 10,        
         }}
       >
         <div className="text-center mb-4">

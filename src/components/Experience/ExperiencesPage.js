@@ -22,33 +22,30 @@ const ExperienceCard = ({ experience }) => {
 
   const location = `${experience.ward.name}, ${experience.ward.district.name}, ${experience.ward.district.province.name}`;
   const placeholderImage = "https://via.placeholder.com/400x300?text=Tr%E1%BA%A3i+nghi%E1%BB%87m";
-  
+
   const handleClick = () => {
     navigate(`/experience/${experience.id}`);
   };
 
   return (
-    <div 
-      className="card border-0 mb-4 shadow-sm" 
-      style={{ cursor: 'pointer' }}
+    <div
+      className="card border-0 mb-4 shadow-sm"
+      style={{ cursor: 'pointer', maxWidth: '500px', height: '450px' }}
       onClick={handleClick}
     >
-      <div className="position-relative">
-        <img 
-          src={experience.image && experience.image[0]?.url || placeholderImage} 
-          alt={experience.name} 
-          className="card-img-top" 
-          style={{
-            height: '250px', 
-            objectFit: 'cover'
-          }}
+      <div className="position-relative" >
+        <img
+          src={experience.image?.[0]?.url || placeholderImage}
+          alt={experience.name}
+          className="card-img-top"
+          style={{ height: '250px', objectFit: 'cover' }}
           onError={(e) => e.target.src = placeholderImage}
         />
         <button
           className="btn btn-light btn-sm position-absolute top-0 end-0 me-2 rounded-circle"
-          onClick={(e) => { 
-            e.stopPropagation(); 
-            setIsLiked(!isLiked); 
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsLiked(!isLiked);
           }}
         >
           <Heart
@@ -58,7 +55,7 @@ const ExperienceCard = ({ experience }) => {
           />
         </button>
       </div>
-      <div className="card-body px-3 pt-3 pb-2">
+      <div className="card-body px-3 pt-3 pb-2" >
         <div className="d-flex justify-content-between align-items-start mb-2">
           <h5 className="card-title mb-0 fw-bold">{experience.name}</h5>
           <div className="d-flex align-items-center text-warning">
@@ -75,7 +72,9 @@ const ExperienceCard = ({ experience }) => {
         </div>
         <div className="d-flex justify-content-between align-items-center">
           <div className="text-dark">
-            <span className="fw-bold text-primary">Từ 800.000đ</span>/người
+            <span className="fw-bold text-primary">
+              {experience.price ? `Từ ${experience.price.toLocaleString('vi-VN')}đ` : 'Chưa có giá'}
+            </span>/người
           </div>
           <button className="btn btn-outline-primary btn-sm rounded-pill px-3">
             Đặt ngay
@@ -102,9 +101,9 @@ const ExperiencesPage = () => {
       try {
         const response = await axios.get('http://localhost:8080/api/v1/experiences');
         setExperiences(response.data);
-        setLoading(false);
       } catch (err) {
         setError('Không thể tải trải nghiệm. Vui lòng thử lại sau.');
+      } finally {
         setLoading(false);
       }
     };
@@ -121,10 +120,7 @@ const ExperiencesPage = () => {
     const matchGuests =
       !filters.maxGuests || experience.maxGuests >= parseInt(filters.maxGuests);
 
-    const matchDate = 
-      !filters.dateRange || new Date(experience.startDate) >= new Date(filters.dateRange);
-
-    return matchProvince && matchGuests && matchDate;
+    return matchProvince && matchGuests;
   });
 
   if (loading) {
@@ -167,10 +163,10 @@ const ExperiencesPage = () => {
               <option value="">Tất cả tỉnh thành</option>
               {Array.from(new Set(experiences.map((exp) => exp.ward.district.province.name)))
                 .map((province) => (
-                <option key={province} value={province}>
-                  {province}
-                </option>
-              ))}
+                  <option key={province} value={province}>
+                    {province}
+                  </option>
+                ))}
             </select>
             <select
               className="form-select form-select-sm flex-grow-1"
@@ -185,13 +181,6 @@ const ExperiencesPage = () => {
                 </option>
               ))}
             </select>
-            <input
-              type="date"
-              className="form-control form-control-sm flex-grow-1"
-              value={filters.dateRange}
-              onChange={(e) => setFilters({ ...filters, dateRange: e.target.value })}
-              style={{ maxWidth: '200px' }}
-            />
           </div>
         </div>
       </div>
@@ -202,7 +191,7 @@ const ExperiencesPage = () => {
           Không tìm thấy trải nghiệm phù hợp. Hãy thử điều chỉnh bộ lọc của bạn.
         </div>
       ) : (
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {filteredExperiences.map((experience) => (
             <div key={experience.id} className="col">
               <ExperienceCard experience={experience} />
@@ -211,7 +200,7 @@ const ExperiencesPage = () => {
         </div>
       )}
 
-      {/* Pagination or Load More */}
+      {/* Load More Button */}
       {filteredExperiences.length > 0 && (
         <div className="text-center mt-4">
           <button className="btn btn-outline-primary rounded-pill px-4">

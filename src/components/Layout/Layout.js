@@ -9,11 +9,16 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import SearchBar from './SearchBar';
 import LoginModal from '../Modal/LoginModal';
 import ProfilePage from '../Auth/ProfilePage';
+import { Modal } from 'react-bootstrap';
+import Dropdown from 'react-bootstrap/Dropdown';
+
+
 
 const Layout = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
   const [isScrolled, setIsScrolled] = useState(false);
+  const userRole = localStorage.getItem("role");
+  const isHost = userRole === "Host";
   const isAuthenticated = localStorage.getItem("accessToken");
 
   // Logout function
@@ -36,17 +41,6 @@ const Layout = ({ children }) => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Fetch categories
-  useEffect(() => {
-    axios.get('http://localhost:8080/api/v1/categories')
-      .then((response) => {
-        setCategories(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching categories:', error);
-      });
   }, []);
 
   return (
@@ -106,13 +100,8 @@ const Layout = ({ children }) => {
             </div>
 
             {/* User Profile Dropdown */}
-            <div className="dropdown">
-              <button
-                className="btn btn-light rounded-pill px-2 py-1 d-flex align-items-center"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
+            <Dropdown>
+              <Dropdown.Toggle variant="light" className="rounded-pill px-2 py-1 d-flex align-items-center">
                 <i className="fas fa-bars me-2"></i>
                 <div
                   className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
@@ -120,55 +109,34 @@ const Layout = ({ children }) => {
                 >
                   <i className="fas fa-user"></i>
                 </div>
-              </button>
-              <ul className="dropdown-menu dropdown-menu-end shadow">
-                {!isAuthenticated && (
-                  <li>
-                    <button className="dropdown-item" onClick={openModal}>Tài Khoản</button>
-                  </li>
-                )}
-                {isAuthenticated && (
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu className="shadow dropdown-menu-end">
+                {!isAuthenticated ? (
+                  <Dropdown.Item onClick={openModal}>Tài Khoản</Dropdown.Item>
+                ) : (
                   <>
-                    <li>
-                      <button
-                        className="dropdown-item"
-                        onClick={() => window.location.href = "/my-profile"}
-                      >
-                        Cá Nhân
-                      </button>
-                    </li>
-                    <li>
-                      <button className="dropdown-item" onClick={logout}>Đăng xuất</button>
-                    </li>
-                    <li><Link to="/booking-history" className="dropdown-item">Chuyến đi của bạn</Link></li>
+                    <Dropdown.Item onClick={() => window.location.href = "/my-profile"}>Cá Nhân</Dropdown.Item>
+                    <Dropdown.Item onClick={logout}>Đăng xuất</Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/booking-history">Chuyến đi của bạn</Dropdown.Item>
                   </>
                 )}
-                <li><hr className="dropdown-divider" /></li>
-                <li><Link to="/help" className="dropdown-item">Trợ giúp</Link></li>
-              </ul>
-            </div>
+                {isHost && (
+                  <>
+                  <Dropdown.Item as={Link} to="/add-property">Thêm địa điểm</Dropdown.Item>
+                  <Dropdown.Item as={Link} to="/property-manager-host">Quản lý địa điểm</Dropdown.Item>
+                  </>
+                )}
+                <Dropdown.Divider />
+                <Dropdown.Item as={Link} to="/help">Trợ giúp</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </div>
       </header>
 
-      {/* Category Filter */}
-      <div className="category-filter-container">
-        <div className="container-fluid px-4">
-          <div className="category-filter d-flex overflow-auto pb-2">
-            {categories.map((category) => (
-              <div key={category.slug} className="category-item me-3 text-center">
-                <div className="d-flex flex-column align-items-center">
-                  <i className={`category-icon mb-1`}>{category.icon}</i>
-                  <span className="category-name small">{category.category_name}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Main Content - Add top padding to prevent content being hidden behind fixed navbar */}
-      <main className="flex-grow-1" style={{ paddingTop: '10px' }}>
+      <main className="flex-grow-1" style={{ paddingTop: '60px' }}>
         {children}
       </main>
 

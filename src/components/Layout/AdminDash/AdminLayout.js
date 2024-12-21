@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-// Icons from Bootstrap Icons
+// Icons from Bootstrap Icons 
 import { 
   LayoutTextSidebar, 
   People, 
@@ -12,10 +12,15 @@ import {
   House
 } from 'react-bootstrap-icons';
 import { FaCity } from 'react-icons/fa';
-import { ClipboardTypeIcon, HousePlus, PanelBottom, PencilIcon, Plane, StopCircle, StretchVertical, TrafficConeIcon } from 'lucide-react';
+import { ClipboardTypeIcon, HousePlus, PanelBottom, PencilIcon, Plane, StopCircle, StretchVertical, Tag, TrafficConeIcon, User } from 'lucide-react';
 import { PiFlagBanner } from 'react-icons/pi';
 
 const MENU_ITEMS = [
+  { 
+    icon: User, 
+    label: 'Quản Lý Người Dùng', 
+    path: '/user-manager' 
+  },
   { 
     icon: ClipboardTypeIcon, 
     label: 'Quản Lý Tỉnh', 
@@ -45,6 +50,11 @@ const MENU_ITEMS = [
     icon: Plane, 
     label: 'Quản Lý Booking', 
     path: '/booking-manager' 
+  },
+  {
+    icon: Tag, 
+    label: 'Quản Lý Nhãn', 
+    path: '/add-categories' 
   }
 ];
 

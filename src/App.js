@@ -12,8 +12,10 @@ import Layout from './components/Layout/Layout';
 import HelpPage from './components/Layout/Help';
 import HomePage from './components/Layout/HomePage';
 import AdminLayout from './components/Layout/AdminDash/AdminLayout';
+import UserManagement from './components/Layout/AdminDash/UserManagement';
 import AdminDashboard from './components/Layout/AdminDash/AdminDashboard';
 import PropertyManagement from './components/Layout/AdminDash/PropertyManagement';
+import HostPropertyManagement from './components/Layout/AdminDash/HostPropertyManagement';
 import BookingManagement from './components/Layout/AdminDash/BookingManagement';
 import WardList from './components/Location/WardList';
 import AddProvince from './components/Location/AddProvince';
@@ -23,12 +25,14 @@ import AddProperty from './components/Property/AddProperty';
 import PropertyList from './components/Property/PropertyList';
 import BookingHistory from './components/Property/BookingHistory';
 import PropertyDetail from './components/Property/PropertyDetail';
+import SuggestedPlaces from './components/Property/SuggestedPlaces';
 import SignupForm from './components/Auth/SignupForm';
 import LoginForm from './components/Auth/LoginForm';
 import AccountTypeSelection from './components/Auth/AccountTypeSelection';
 import ProfilePage from './components/Auth/ProfilePage';
 import ExperiencesPage from './components/Experience/ExperiencesPage';
 import ExperiencesDetailPage from './components/Experience/ExperiencesDetailPage';
+import AddExperience from './components/Experience/AddExperience';
 import AccessDenied from './components/Auth/AccessDenied'; // Import AccessDenied page
 
 const App = () => {
@@ -151,11 +155,35 @@ const App = () => {
         }
       />
       <Route
+        path="/property-manager-host"
+        element={
+          isAuthenticated && isHost ? (
+            <Layout>
+              <HostPropertyManagement />
+            </Layout>
+          ) : (
+            <Navigate to="/access-denied" />
+          )
+        }
+      />
+      <Route
         path="/booking-manager"
         element={
           isAuthenticated && isAdmin ? (
             <AdminLayout>
               <BookingManagement />
+            </AdminLayout>
+          ) : (
+            <Navigate to="/access-denied" />
+          )
+        }
+      />
+      <Route
+        path="/user-manager"
+        element={
+          isAuthenticated && isAdmin ? (
+            <AdminLayout>
+              <UserManagement />
             </AdminLayout>
           ) : (
             <Navigate to="/access-denied" />
@@ -197,6 +225,26 @@ const App = () => {
             ) : userRole === "Host" ? (
               <Layout>
                 <AddProperty /> {/* Route cho Host */}
+              </Layout>
+            ) : (
+              <Navigate to="/access-denied" /> // Nếu không phải Admin hoặc Host
+            )
+          ) : (
+            <Navigate to="/login" /> // Nếu chưa đăng nhập
+          )
+        }
+      />
+      <Route
+        path="/add-experience"
+        element={
+          isAuthenticated ? (
+            userRole === "Admin" ? (
+              <AdminLayout>
+                <AddExperience /> {/* Route cho Admin */}
+              </AdminLayout>
+            ) : userRole === "Host" ? (
+              <Layout>
+                <AddExperience /> {/* Route cho Host */}
               </Layout>
             ) : (
               <Navigate to="/access-denied" /> // Nếu không phải Admin hoặc Host
